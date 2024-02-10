@@ -1,0 +1,41 @@
+# Dependency directories
+**/node_modules/
+
+# Distribution directories
+**/dist/
+
+# Environment variables
+.env
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# Compiled TypeScript
+*.js
+*.js.map
+*.d.ts
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+*.db-journal
+
+# Coverage directories
+**/coverage/
+
+# Compiled binary addons (if any)
+**/build/
+
+# Miscellaneous
+*.swp
+*.swo
+*.out
+
+# Yarn integrity file
+.yarn-integrity
