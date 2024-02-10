@@ -14,7 +14,7 @@ const welcomeEmailTemplate = function (firstname: string) {
           max-width: 0;
         "
       >
-        Start creating mixs today. Welcome to Slyft
+        Start giving or getting lifts today. Welcome to Slyft
         <div>
            ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏  ‌ ‍‎‏ 
         </div>
@@ -162,7 +162,7 @@ const welcomeEmailTemplate = function (firstname: string) {
                         margin: 16px 0;
                         margin-bottom: 1.5rem;
                         color: rgb(23, 24, 28);
-                      ">Get ready to explore and enjoy the best streaming experience.</p>
+                      ">Get ready to explore and enjoy the best car-sharing platform.</p>
                   
 
                         <p
@@ -201,7 +201,7 @@ const welcomeEmailTemplate = function (firstname: string) {
                   cellspacing="0"
                   role="presentation"
                   style="
-                    background-color: rgb(6, 129, 62);
+                    background-color: rgb(31, 41, 55);
                     padding-left: 2.75rem;
                     padding-right: 2.75rem;
                     padding-top: 30px;
@@ -576,8 +576,8 @@ const welcomeEmailTemplate = function (firstname: string) {
                             color: rgb(255, 255, 255);
                           "
                         >
-                          123 Davids Street, Floor 12San Francisco, <br />
-                          CA, 94102
+                          123 Davids Street, Floor 12 Lagos, <br />
+                          NG, 100242
                         </p>
                       </td>
                     </tr>

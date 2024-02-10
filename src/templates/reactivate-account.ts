@@ -207,7 +207,7 @@ const reactivateAccountEmailTemplate = function (email: string) {
                       cellspacing="0"
                       role="presentation"
                       style="
-                        background-color: rgb(6, 129, 62);
+                        background-color: rgb(31, 41, 55);
                         padding-left: 2.75rem;
                         padding-right: 2.75rem;
                         padding-top: 30px;

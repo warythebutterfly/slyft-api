@@ -172,7 +172,7 @@ const closeAccountEmailTemplate = function (
                         style="
                         display: inline-block;
                         padding: 10px 20px;
-                        background-color: rgb(6,129,62);
+                        background-color: rgb(31, 41, 55);;
                         color: rgb(255, 255, 255);
                         text-decoration: none;
                         font-size: 1.2em;
@@ -222,7 +222,7 @@ const closeAccountEmailTemplate = function (
                     cellspacing="0"
                     role="presentation"
                     style="
-                      background-color: rgb(6, 129, 62);
+                      background-color: rgb(31, 41, 55);
                       padding-left: 2.75rem;
                       padding-right: 2.75rem;
                       padding-top: 30px;

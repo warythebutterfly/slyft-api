@@ -201,7 +201,7 @@ const passwordResetSuccessEmailTemplate = function (firstname: string) {
                   cellspacing="0"
                   role="presentation"
                   style="
-                    background-color: rgb(6, 129, 62);
+                    background-color: rgb(31, 41, 55);
                     padding-left: 2.75rem;
                     padding-right: 2.75rem;
                     padding-top: 30px;
@@ -573,8 +573,8 @@ const passwordResetSuccessEmailTemplate = function (firstname: string) {
                             color: rgb(255, 255, 255);
                           "
                         >
-                          123 Davids Street, Floor 12San Francisco, <br />
-                          CA, 94102
+                          123 Davids Street, Floor 12 Lagos, <br />
+                          NG, 100242
                         </p>
                       </td>
                     </tr>
