@@ -125,7 +125,10 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
+    Logging.error("email and password" + email + password);
+
     if (!email || !password) {
+      Logging.error("no email or password");
       return res.status(400).json({
         success: false,
         errors: ["Please provide both email and password"],
@@ -136,6 +139,7 @@ export const loginUser = async (req: Request, res: Response) => {
     );
 
     if (!user) {
+      Logging.error("user not found");
       return res.status(401).json({
         success: false,
         errors: ["Invalid credentials. User does not exist"],
@@ -143,6 +147,7 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     if (user.status !== "Active") {
+      Logging.error("user not active");
       return res
         .status(403)
         .json({ success: false, errors: ["Forbidden - User is not Active"] });
@@ -150,6 +155,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
     const expectedHash = authentication(user.authentication.salt, password);
     if (user.authentication.password !== expectedHash) {
+      Logging.error("passwords don't match");
       return res.status(401).json({
         success: false,
         errors: ["Invalid credentials. Passwords don't match"],
