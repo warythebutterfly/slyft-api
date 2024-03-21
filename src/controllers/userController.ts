@@ -22,6 +22,7 @@ import cron from "node-cron";
 import closeAccountEmailTemplate from "../templates/close-account";
 import confirmCloseAccountEmailTemplate from "../templates/confirm-close-account";
 import reactivaeAccountEmailTemplate from "../templates/reactivate-account";
+import { onNewAccountCreated } from "./notificationController";
 
 // @desc    Register a new user
 // @route   POST /v1/user/auth/register
@@ -29,7 +30,6 @@ import reactivaeAccountEmailTemplate from "../templates/reactivate-account";
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const user = req.body;
-
     //Validation
     if (!user.email || !user.password) {
       return res
@@ -39,7 +39,6 @@ export const registerUser = async (req: Request, res: Response) => {
 
     //Find if user already exists
     const existingUser = await getUserByEmail(user.email);
-
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -55,24 +54,14 @@ export const registerUser = async (req: Request, res: Response) => {
       password: authentication(salt, user.password),
     };
 
-    const role = await getRoleByName("Passenger");
+    const role = await getRoleByName("User");
 
     user.roles = role ? [role._id.toString()] : [];
 
     //Create user
     const newUser = await createUser(user);
 
-    const slugs = [];
-    const permissions = await getPermissionsByRoleId(role._id.toString());
-    if (permissions) {
-      console.log("permissions", permissions);
-      permissions.forEach(async (permissionId: any) => {
-        const permission: any = await getPermissionById(permissionId);
-        console.log("permission", permission);
-        const { slug } = permission?.slug || {};
-        slugs.push(slug);
-      });
-    }
+    const slugs = await processUserRoles(user);
 
     const { token, publicKey, privateKey } = await generateToken({
       userId: newUser._id.toString(),
@@ -90,12 +79,13 @@ export const registerUser = async (req: Request, res: Response) => {
       const emailTemplate = welcomeEmailTemplate(newUser.firstname);
 
       mailService.sendEmail({
-        from: '"Slyft" <' + process.env.EMAIL_USER + ">",
+        from: '"StreamBix" <' + process.env.EMAIL_USER + ">",
         to: newUser.email,
         subject: emailTemplate.subject,
         html: emailTemplate.html,
       });
 
+      onNewAccountCreated(newUser.firstname, newUser._id.toString());
       return res
         .status(201)
         .json({
@@ -267,7 +257,8 @@ export const updateUser = async (req: Request, res: Response) => {
     const userId = req.params.id;
     let { firstname, lastname, dateOfBirth } = req.body;
     const { phoneNumber, gender, country } = req.body;
-    const file = req.file;
+    //TODO:store user avatar
+    //const file = req.file;
 
     if (!userId)
       return res.status(400).json({
@@ -289,7 +280,7 @@ export const updateUser = async (req: Request, res: Response) => {
     lastname = userExists.lastname ? userExists.lastname : lastname;
     dateOfBirth = userExists.dateOfBirth ? userExists.dateOfBirth : dateOfBirth;
 
-    let avatarUrl: string = null;
+    const avatarUrl: string = null;
 
     // Enhancement: Offload to a queue
     // if (file) {

@@ -9,6 +9,7 @@ import { config } from "./config/config";
 import Logging from "./library/Logging";
 import swaggerUi from "swagger-ui-express";
 import { docs } from "./docs/index";
+import { WebSocketConnection } from "./controllers/notificationController";
 
 /**
  * App Variables
@@ -73,9 +74,11 @@ const startServer = () => {
    * Server Activation
    */
 
-  app.listen(config.server.port, () => {
+  const server = app.listen(config.server.port, () => {
     return console.log(
       `Express is listening at http://localhost:${config.server.port}`
     );
   });
+
+  new WebSocketConnection(server);
 };
