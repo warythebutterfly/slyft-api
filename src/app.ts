@@ -80,5 +80,5 @@ const startServer = () => {
     );
   });
 
-  //new WebSocketConnection(server);
+  new WebSocketConnection(server);
 };
