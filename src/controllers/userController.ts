@@ -199,7 +199,7 @@ export const loginUser = async (req: Request, res: Response) => {
 // @access  Private
 export const getUser = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.user;
+    const { userId } = req.body;
 
     const user = await getUserById(userId);
 
@@ -649,7 +649,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 export const changePassword = async (req: Request, res: Response) => {
   try {
     //Get user
-    const { userId } = req.user;
+    const { userId } = req.body;
 
     const user = await getUserById(userId);
 

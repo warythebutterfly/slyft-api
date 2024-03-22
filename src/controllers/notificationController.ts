@@ -243,7 +243,7 @@ export const create = async (req: Request, res: Response) => {
 // @access  Private
 export const get = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.user;
+    const { userId } = req.body;
     let notifications = await getNotificationsByUserId(userId);
 
     const currentTime = new Date();
@@ -441,7 +441,7 @@ export const remove = async (req: Request, res: Response) => {
 // @access  Private
 export const removeAll = (req: Request, res: Response) => {
   try {
-    const { userId } = req.user;
+    const { userId } = req.body;
     deleteUserNotifications(userId);
 
     return res
