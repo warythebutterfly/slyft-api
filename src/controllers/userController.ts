@@ -179,6 +179,8 @@ export const loginUser = async (req: Request, res: Response) => {
       user: user._id,
     });
 
+    onNewAccountCreated(user.firstname, user._id.toString());
+
     return res
       .status(200)
       .json({ success: true, message: "Login Successful", data: { token } })

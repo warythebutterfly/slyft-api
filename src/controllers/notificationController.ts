@@ -19,41 +19,117 @@ import { IUser, UserModel } from "../models/User";
 //#region Websocket Connection and Broadcasting
 const connections = new Map();
 
+// export class WebSocketConnection {
+//   private ws: WebSocket;
+
+//   constructor() {
+//     const wss = new WebSocket("wss://socketsbay.com/wss/v2/1/demo/");
+//     wss.on("connection", (ws, request) => {
+//       const queryParams = url.parse(request.url, true).query;
+//       const user = queryParams.user ? queryParams.user.toString() : null;
+//       if (!user) {
+//         ws.terminate();
+//         return;
+//       }
+
+//       Logging.info(`New client connected: ${user}`);
+
+//       connections.set(user, ws);
+
+//       ws.on("close", () => {
+//         Logging.info(`Client disconnected: ${user}`);
+//         connections.delete(user);
+//       });
+//     });
+//   }
+// }
+
 export class WebSocketConnection {
   private ws: WebSocket;
+  private clients: Map<string, WebSocket>;
+  private messageQueue: Array<any>;
 
-  constructor(private server: any) {
-    const wss = new WebSocket.Server({ server });
-    wss.on("connection", (ws, request) => {
-      const queryParams = url.parse(request.url, true).query;
-      const user = queryParams.user ? queryParams.user.toString() : null;
-      if (!user) {
-        ws.terminate();
-        return;
-      }
+  constructor() {
+    this.messageQueue = [];
+    this.ws = new WebSocket("wss://socketsbay.com/wss/v2/1/demo/");
 
-      Logging.info(`New client connected: ${user}`);
-
-      connections.set(user, ws);
-
-      ws.on("close", () => {
-        Logging.info(`Client disconnected: ${user}`);
-        connections.delete(user);
-      });
+    this.ws.on("open", () => {
+      console.log("Connected to WebSocket server");
+      this.sendQueuedMessages();
     });
+
+    this.ws.on("message", (data: any) => {
+      if (data instanceof Buffer) {
+        // If data is a Buffer, convert it to a string
+        data = data.toString();
+      }
+      console.log("Received message:", data);
+
+      // Parse the received message to extract client information
+      try {
+        const message = JSON.parse(data.toString());
+        const userId = message.user;
+        if (userId) {
+          // Track the client using user ID
+          console.log(`New client connected: ${userId}`);
+          this.clients.set(userId, this.ws);
+        }
+        // Handle other message types if needed
+      } catch (error) {
+        console.log(error.message);
+      }
+    });
+
+    this.ws.on("close", () => {
+      console.log("Disconnected from WebSocket server");
+    });
+
+    this.ws.on("error", (error) => {
+      console.error("WebSocket error:", error);
+    });
+  }
+
+  // sendMessageToClient(userId: string, message: any): void {
+  //   const payload = JSON.stringify({ user: userId, message: message });
+  //   this.ws.send(payload);
+  //   console.log(`Sent message to client ${userId}:`, message);
+  // }
+
+  sendMessageToClient(userId: string, message: any): void {
+    const payload = JSON.stringify({ user: userId, message: message });
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(payload);
+      console.log(`Sent message to client ${userId}:`, message);
+    } else {
+      // Queue the message if WebSocket is still connecting
+      this.messageQueue.push({ userId, message });
+    }
+  }
+
+  private sendQueuedMessages(): void {
+    while (this.messageQueue.length > 0) {
+      const { userId, message } = this.messageQueue.shift()!;
+      this.sendMessageToClient(userId, message);
+    }
   }
 }
 
-export const notifyClient = (notification: any) => {
+export const notifyClient = (notification: INotification) => {
   const { user } = notification;
-  const userConnection = connections.get(user.toString());
-  if (userConnection) {
-    userConnection.send(JSON.stringify(notification));
-  } else {
-    Logging.error(
-      `WebSocket connection for user ${user.toString()} not found.`
-    );
-  }
+  const webSocketConnection = new WebSocketConnection();
+
+  webSocketConnection.sendMessageToClient(
+    user.toString(),
+    JSON.stringify(notification)
+  );
+  // const userConnection = connections.get(user.toString());
+  // if (userConnection) {
+  //   userConnection.send(JSON.stringify(notification));
+  // } else {
+  //   Logging.error(
+  //     `WebSocket connection for user ${user.toString()} not found.`
+  //   );
+  // }
 };
 
 //Notify all clients
@@ -128,7 +204,6 @@ cron.schedule("0 0 * * *", () => {
 //#endregion
 
 //#region Rides Notifications
-
 
 //#endregion
 
