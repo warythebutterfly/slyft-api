@@ -6,11 +6,11 @@ import { getUserById } from "../controllers/user";
 import Logging from "../library/Logging";
 dotenv.config();
 
-declare module "express-serve-static-core" {
-  interface Request {
-    user?: any;
-  }
-}
+// declare module "express-serve-static-core" {
+//   interface Request {
+//     user?: any;
+//   }
+// }
 
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,7 +27,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     const { status } = await getUserById(decoded.userId);
     if (status !== "Active") return res.status(401).send("Not authorized.");
 
-    req.user = decoded;
+    req.body = decoded;
 
     next();
   } catch (err) {
@@ -54,7 +54,7 @@ export const reactivate = async (
     const { status } = await getUserById(decoded.userId);
     if (status === "Deleted") return res.status(401).send("Not authorized.");
 
-    req.user = decoded;
+    req.body = decoded;
 
     next();
   } catch (err) {
@@ -65,8 +65,8 @@ export const reactivate = async (
 export const hasPermission = (requiredPermission: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (
-      req.user.permissions &&
-      req.user.permissions.includes(requiredPermission)
+      req.body.permissions &&
+      req.body.permissions.includes(requiredPermission)
     ) {
       Logging.info("You have permission to access this route.");
       next();
