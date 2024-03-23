@@ -577,7 +577,7 @@ const verifyEmailTemplate = function (otp: string) {
         </body>
       </html>`;
 
-  const subject = "Slyft Password Reset";
+  const subject = "Slyft - Email Verification";
 
   return {
     html,
