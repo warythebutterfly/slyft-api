@@ -616,7 +616,7 @@ export const verifyPasswordReset = async (req: Request, res: Response) => {
     }
 
     // Delete OTP after successful verification
-    //await deleteOtpById(validOtp._id);
+    await deleteOtpById(validOtp._id);
 
     return res.status(200).json({
       success: true,
