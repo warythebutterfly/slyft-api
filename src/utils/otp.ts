@@ -113,11 +113,15 @@ export const getOtp = async function (
   otp: string,
   type: string
 ): Promise<any> {
-  const existOtp = await getOTP(email, otp, type);
+  try {
+    const existOtp = await getOTP(email, otp, type);
 
-  const currentDate = new Date();
-  if (!existOtp || existOtp.otpExpiration! < currentDate) {
-    return null;
+    const currentDate = new Date();
+    if (!existOtp || existOtp.otpExpiration! < currentDate) {
+      return null;
+    }
+    return existOtp;
+  } catch (error) {
+    Logging.error(error.message);
   }
-  return existOtp;
 };
