@@ -68,6 +68,7 @@ export class WebSocketConnection {
       // Parse the received message to extract client information
       try {
         const message = JSON.parse(data.toString());
+        //console.log(message);
         const userId = message.user;
         if (userId) {
           // Track the client using user ID
@@ -113,7 +114,7 @@ export class WebSocketConnection {
     }
   }
 }
-
+//new WebSocketConnection();
 export const notifyClient = (notification: INotification) => {
   const { user } = notification;
   const webSocketConnection = new WebSocketConnection();

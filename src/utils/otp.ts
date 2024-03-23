@@ -3,6 +3,7 @@ import mailService from "./mailService";
 import { getOTP } from "../controllers/otp";
 import forgotPasswordEmailTemplate from "../templates/forgot-password";
 import Logging from "../library/Logging";
+import verifyEmailTemplate from "../templates/verify-email";
 
 //GENERATE OTP
 export const generateOtp = function (len: number): string {
@@ -14,6 +15,46 @@ export const generateOtp = function (len: number): string {
   return OTP;
 };
 
+export const sendVerifyEmailOtp = async (email: string) => {
+  try {
+    const otpExpirationMinutes = 5;
+    const otp: string = generateOtp(6);
+    const otpExpiration = new Date();
+    otpExpiration.setMinutes(otpExpiration.getMinutes() + otpExpirationMinutes);
+
+    const newOtp = new OtpModel({
+      email,
+      type: "verification",
+      otp,
+      otpExpiration,
+    });
+
+    await newOtp.save();
+
+    const emailTemplate = verifyEmailTemplate(otp);
+
+    const resp = await mailService.sendEmail({
+      from: '"Slyft" <' + process.env.EMAIL_USER + ">",
+      to: email,
+      subject: emailTemplate.subject,
+      html: emailTemplate.html,
+    });
+
+    if (resp.success)
+      return {
+        success: true,
+        message: "OTP sent successfully.",
+        data: { otp, type: newOtp.type },
+      };
+    else return resp;
+  } catch (error) {
+    Logging.error(error);
+    return {
+      success: false,
+      errors: ["Internal Server Error. Please try again later."],
+    };
+  }
+};
 export const sendEmailOtp = async (email: string, firstname: string) => {
   try {
     // const user = await getUserByEmail(email);

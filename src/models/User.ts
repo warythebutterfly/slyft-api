@@ -15,6 +15,7 @@ interface IUser {
     sessionToken?: string;
   };
   status: "Active" | "Closed" | "Deleted";
+  userType: "Staff" | "Student";
   roles?: Array<string>;
   updatedAt: Date;
   createdAt: Date;
@@ -24,7 +25,7 @@ interface IUserModel extends IUser, Document {}
 
 const UserSchema = new Schema<IUserModel>(
   {
-    firstname: { type: String},
+    firstname: { type: String },
     lastname: { type: String },
     email: {
       type: String,
@@ -47,6 +48,11 @@ const UserSchema = new Schema<IUserModel>(
       required: true,
       enum: ["Active", "Deactivated", "Closed"],
       default: "Active",
+    },
+    userType: {
+      type: String,
+      required: true,
+      enum: ["Staff", "Student"],
     },
     roles: [{ type: String, ref: "Role" }],
   },
