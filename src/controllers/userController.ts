@@ -9,7 +9,7 @@ import {
 } from "./user";
 import { authentication, isValidEmail, random } from "../helpers";
 import { generateToken } from "../utils/jwt-service";
-import { getOtp, sendEmailOtp } from "../utils/otp";
+import { getOtp, sendEmailOtp, sendVerifyEmailOtp } from "../utils/otp";
 import { deleteOtpById } from "./otp";
 import { createToken, updateTokenByUserId } from "./token";
 import { getRoleByName } from "./role";
@@ -464,6 +464,56 @@ export const closeUser = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       errors: ["Internal Server Error. Please try again later.", error.message],
+    });
+  }
+};
+
+// @desc    Verify email address
+// @route   POST /v1/user/auth/verify-email
+// @access  Public
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        errors: ["Please provide an email address"],
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        errors: ["Please provide a valid email address"],
+      });
+    }
+
+    // send 6 digits otp
+    const resp = await sendVerifyEmailOtp(email);
+    if (resp.success) {
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "Verificationt email sent successfully",
+          data: { otp: resp.data.otp },
+        })
+        .end();
+    } else {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          errors: resp.errors,
+        })
+        .end();
+    }
+  } catch (error) {
+    Logging.error(error);
+    res.status(500).json({
+      success: false,
+      errors: ["Internal Server Error. Please try again later."],
     });
   }
 };

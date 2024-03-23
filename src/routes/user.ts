@@ -11,6 +11,7 @@ import {
   closeUser,
   removeUser,
   changePassword,
+  verifyEmail,
 } from "../controllers/userController";
 import { auth, reactivate } from "../middleware/auth";
 import {
@@ -36,6 +37,7 @@ export default (router: Router) => {
     .delete(auth, removeUser);
   router.post("/user/auth/forgot-password", sendPasswordReset);
   router.post("/user/auth/verify-otp", verifyPasswordReset);
+  router.post("/user/auth/verify-email", verifyEmail);
   router.post("/user/auth/password-reset", resetPassword);
   router.post("/user/auth/password-change", auth, changePassword);
   router.route("/user/role").get(getRoles).post(createRole);
