@@ -58,6 +58,10 @@ export const registerUser = async (req: Request, res: Response) => {
 
     user.roles = role ? [role._id.toString()] : [];
 
+    //TODO figure out user type based on email supplied
+    if (user.email.endsWith("@live.unilag.edu.ng")) user.userType = "Student";
+    else user.userType = "Staff";
+
     //Create user
     const newUser = await createUser(user);
 
