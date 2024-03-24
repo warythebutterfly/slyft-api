@@ -23,6 +23,8 @@ import closeAccountEmailTemplate from "../templates/close-account";
 import confirmCloseAccountEmailTemplate from "../templates/confirm-close-account";
 import reactivaeAccountEmailTemplate from "../templates/reactivate-account";
 import { onNewAccountCreated } from "./notificationController";
+// import { BipartiteGraph } from "bipartite-matching";
+// import { hungarian } from "bipartite-matching";
 
 // @desc    Register a new user
 // @route   POST /v1/user/auth/register
@@ -776,4 +778,102 @@ async function processUserRoles(user: IUser) {
   );
 
   return slugs;
+}
+
+export interface ILocation {
+  lat: number;
+  lng: number;
+}
+export interface IMatch {
+  passengerType?: string;
+  riderType?: string;
+  userType: string;
+}
+export interface Location {
+  // Define attributes of a point
+  description: string;
+  location: ILocation;
+}
+export interface Driver {
+  // Define attributes of a driver
+  destination: Location;
+  match: IMatch;
+  origin: Location;
+  user: any;
+}
+
+export interface Passenger {
+  // Define attributes of a passenger
+  destination: Location;
+  match: IMatch;
+  origin: Location;
+  user: any;
+}
+
+
+// function matchDriversPassengers2(drivers: Driver[], passengers: Passenger[]) {
+//   console.log("got here just fine");
+//   const graph = new BipartiteGraph<Driver, Passenger>();
+
+//   // Add nodes (drivers and passengers) to the graph
+//   drivers.forEach((driver) => graph.addNode(driver, "driver"));
+//   passengers.forEach((passenger) => graph.addNode(passenger, "passenger"));
+
+//   // Add edges between drivers and passengers with weights representing match suitability
+//   drivers.forEach((driver) => {
+//     passengers.forEach((passenger) => {
+//       const weight = calculateMatchWeight(driver, passenger);
+//       graph.addEdge(driver, passenger, weight);
+//     });
+//   });
+
+//   // Apply the Hungarian algorithm to find the maximum weighted matching
+//   const matching = hungarian(graph);
+
+//   // Extract the matched pairs from the matching
+//   const matches = matching.edges.map((edge) => ({
+//     driver: edge.source,
+//     passenger: edge.target,
+//   }));
+
+//   return matches;
+// }
+
+// Function to calculate the weight of a match between a driver and a passenger
+function calculateMatchWeight(driver: Driver, passenger: Passenger): number {
+  // You can define your own logic to calculate the weight based on various factors
+  const originDistance = calculateDistance2(driver.origin, passenger.origin);
+  const destinationDistance = calculateDistance2(
+    driver.destination,
+    passenger.destination
+  );
+
+  // Weight is the sum of distances between origin and destination
+  return originDistance + destinationDistance;
+  // For simplicity, let's assume a constant weight of 1 for all matches
+  // return 1;
+}
+
+// Function to calculate the distance between two points using the Haversine formula
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = ((lat2 - lat1) * Math.PI) / 180; // Convert degrees to radians
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c; // Distance in kilometers
+  
+  return distance;
+}
+
+function calculateDistance2(location1: Location, location2: Location): number {
+  // Euclidean distance formula
+  const latDiff = location1.location.lat - location2.location.lat;
+  const lngDiff = location1.location.lng - location2.location.lng;
+  return Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
 }

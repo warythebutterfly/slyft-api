@@ -15,9 +15,71 @@ import url from "url";
 import { timeAgo } from "../helpers";
 import cron from "node-cron";
 import { IUser, UserModel } from "../models/User";
+import { Driver, Passenger, matchDriversPassengers } from "./matchController";
+import { generateOtp } from "../utils/otp";
 
 //#region Websocket Connection and Broadcasting
 const connections = new Map();
+
+// Initialize array of drivers and passengers
+let drivers: Driver[] = [
+  // {
+  //   destination: {
+  //     description:
+  //       "Faculty of Social Science, UNILAG, Commercial Road, Lagos, Nigeria",
+  //     location: {
+  //       lat: 6.515889199999999,
+  //       lng: 3.391666,
+  //     },
+  //   },
+  //   match: {
+  //     passengerType: "Student", //this user is a driver that wants a student as his passenger
+  //     userType: "Student", //this user is a driver that is a student
+  //   },
+  //   origin: {
+  //     description: "Oredola Street, Lagos, Nigeria",
+  //     location: {
+  //       lat: 6.5288565,
+  //       lng: 3.3809722,
+  //     },
+  //   },
+  //   user: {
+  //     _id: "65ff014c893a534408944b97",
+  //     userType: "Student",
+  //     firstname: "Ayo",
+  //     lastname: "Balogun",
+  //   },
+  // },
+];
+let passengers: Passenger[] = [
+  // {
+  //   destination: {
+  //     description:
+  //       "Faculty of Social Science, UNILAG, Commercial Road, Lagos, Nigeria",
+  //     location: {
+  //       lat: 6.515889199999999,
+  //       lng: 3.391666,
+  //     },
+  //   },
+  //   match: {
+  //     riderType: "Slyft for Student", // this user is a passenger that wants a Student as his driver
+  //     userType: "Student", //this user is a passenger that is a student
+  //   },
+  //   origin: {
+  //     description: "Oredola Street, Lagos, Nigeria",
+  //     location: {
+  //       lat: 6.5288565,
+  //       lng: 3.3809722,
+  //     },
+  //   },
+  //   user: {
+  //     _id: "65ffi56346i274808944b92",
+  //     userType: "Student",
+  //     firstname: "Ayo",
+  //     lastname: "Balogun",
+  //   },
+  // },
+];
 
 // export class WebSocketConnection {
 //   private ws: WebSocket;
@@ -68,6 +130,8 @@ export class WebSocketConnection {
       // Parse the received message to extract client information
       try {
         const message = JSON.parse(data.toString());
+        this.connectFinders(message);
+
         //console.log(message);
         const userId = message.user;
         if (userId) {
@@ -96,6 +160,87 @@ export class WebSocketConnection {
   //   console.log(`Sent message to client ${userId}:`, message);
   // }
 
+  private async connectFinders(data: any) {
+    //area for connecting finders
+    // Update array of drivers or passengers based on the received data
+    console.log(data.type);
+    if (data.type === "driver" && data.action === "add") {
+      const index = drivers.findIndex(
+        (item) => item.user._id === data.payload.user._id
+      );
+
+      if (index !== -1) drivers[index] = data.payload;
+      else drivers.push(data.payload);
+    } else if (data.type === "passenger" && data.action === "add") {
+      const index = passengers.findIndex(
+        (item) => item.user._id === data.payload.user._id
+      );
+
+      if (index !== -1) passengers[index] = data.payload;
+      else passengers.push(data.payload);
+    }
+
+    if (data.type === "driver" && data.action === "remove") {
+      drivers = drivers.filter(
+        (item) => item.user._id !== data.payload.user._id
+      );
+    } else if (data.type === "passenger" && data.action === "remove") {
+      passengers = passengers.filter(
+        (item) => item.user._id !== data.payload.user._id
+      );
+    }
+
+    const matchedPairs = await matchDriversPassengers(drivers, passengers, 1);
+    console.log("Matched pairs:", matchedPairs);
+    for (const matchedPair of matchedPairs) {
+      //TODO: Alert them
+      if (this.ws.readyState === WebSocket.OPEN) {
+        const pin = generateOtp(4);
+        this.ws.send(
+          JSON.stringify({
+            user: matchedPair.driver.user._id,
+            message: "We found you a passenger!",
+            passengerDetails: {
+              pin,
+              rating: 4.97,
+              // plateNumber: "AA 123AA",
+              // carName: "Toyota Corolla",
+              passengerPhoneNumber: "07083992112",
+              passengerName: `${matchedPair.driver.user.firstname} ${matchedPair.driver.user.lastname}`,
+            },
+          })
+        );
+        this.ws.send(
+          JSON.stringify({
+            user: matchedPair.passenger.user._id,
+            message: "We found you a ride!",
+            driverDetails: {
+              pin,
+              rating: 4.97,
+              plateNumber: "AA 123AA",
+              carName: "Toyota Corolla",
+              driverPhoneNumber: "07083992112",
+              driverName: `${matchedPair.driver.user.firstname} ${matchedPair.driver.user.lastname}`,
+            },
+          })
+        );
+        console.log(
+          `Sent message to client ${matchedPair.driver.user._id}:`,
+          "message"
+        );
+      } else {
+        // Queue the message if WebSocket is still connecting
+        this.messageQueue.push({
+          userId: matchedPair.driver.user._id,
+          message: "message",
+        });
+      }
+    }
+    //TODO: Remove matched pairs from passenger and driver array
+    console.log("passengers", passengers.length);
+    console.log("drivers", drivers.length);
+  }
+
   sendMessageToClient(userId: string, message: any): void {
     const payload = JSON.stringify({ user: userId, message: message });
     if (this.ws.readyState === WebSocket.OPEN) {
@@ -114,7 +259,8 @@ export class WebSocketConnection {
     }
   }
 }
-//new WebSocketConnection();
+
+new WebSocketConnection();
 export const notifyClient = (notification: INotification) => {
   const { user } = notification;
   const webSocketConnection = new WebSocketConnection();
