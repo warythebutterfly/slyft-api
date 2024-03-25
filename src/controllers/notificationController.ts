@@ -190,7 +190,7 @@ export class WebSocketConnection {
       );
     }
 
-    const matchedPairs = await matchDriversPassengers(drivers, passengers, 1);
+    const matchedPairs = await matchDriversPassengers(drivers, passengers, 1.3);
     console.log("Matched pairs:", matchedPairs);
     for (const matchedPair of matchedPairs) {
       //TODO: Alert them
@@ -202,7 +202,7 @@ export class WebSocketConnection {
             message: "We found you a passenger!",
             passengerDetails: {
               pin,
-              rating: 4.97,
+              rating: 4.87,
               // plateNumber: "AA 123AA",
               // carName: "Toyota Corolla",
               passengerPhoneNumber: "07083992112",
