@@ -145,9 +145,9 @@ export class WebSocketConnection {
       }
     });
 
-    this.ws.on("close", () => {
-      console.log("Disconnected from WebSocket server");
-    });
+    // this.ws.on("close", () => {
+    //   console.log("Disconnected from WebSocket server");
+    // });
 
     this.ws.on("error", (error) => {
       console.error("WebSocket error:", error);
