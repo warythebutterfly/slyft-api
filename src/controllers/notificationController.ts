@@ -106,169 +106,169 @@ let passengers: Passenger[] = [
 //   }
 // }
 
-export class WebSocketConnection {
-  private ws: WebSocket;
-  private clients: Map<string, WebSocket>;
-  private messageQueue: Array<any>;
+// export class WebSocketConnection {
+//   private ws: WebSocket;
+//   private clients: Map<string, WebSocket>;
+//   private messageQueue: Array<any>;
 
-  constructor() {
-    this.messageQueue = [];
-    this.ws = new WebSocket("wss://socketsbay.com/wss/v2/1/demo/");
+//   constructor() {
+//     this.messageQueue = [];
+//     this.ws = new WebSocket("wss://socketsbay.com/wss/v2/1/demo/");
 
-    this.ws.on("open", () => {
-      console.log("Connected to WebSocket server");
-      this.sendQueuedMessages();
-    });
+//     this.ws.on("open", () => {
+//       console.log("Connected to WebSocket server");
+//       this.sendQueuedMessages();
+//     });
 
-    this.ws.on("message", (data: any) => {
-      if (data instanceof Buffer) {
-        // If data is a Buffer, convert it to a string
-        data = data.toString();
-      }
-      console.log("Received message:", data);
+//     this.ws.on("message", (data: any) => {
+//       if (data instanceof Buffer) {
+//         // If data is a Buffer, convert it to a string
+//         data = data.toString();
+//       }
+//       console.log("Received message:", data);
 
-      // Parse the received message to extract client information
-      try {
-        const message = JSON.parse(data.toString());
-        this.connectFinders(message);
+//       // Parse the received message to extract client information
+//       try {
+//         const message = JSON.parse(data.toString());
+//         this.connectFinders(message);
 
-        //console.log(message);
-        const userId = message.user;
-        if (userId) {
-          // Track the client using user ID
-          console.log(`New client connected: ${userId}`);
-          this.clients.set(userId, this.ws);
-        }
-        // Handle other message types if needed
-      } catch (error) {
-        console.log(error.message);
-      }
-    });
+//         //console.log(message);
+//         const userId = message.user;
+//         if (userId) {
+//           // Track the client using user ID
+//           console.log(`New client connected: ${userId}`);
+//           this.clients.set(userId, this.ws);
+//         }
+//         // Handle other message types if needed
+//       } catch (error) {
+//         console.log(error.message);
+//       }
+//     });
 
-    // this.ws.on("close", () => {
-    //   console.log("Disconnected from WebSocket server");
-    // });
+//     // this.ws.on("close", () => {
+//     //   console.log("Disconnected from WebSocket server");
+//     // });
 
-    this.ws.on("error", (error) => {
-      console.error("WebSocket error:", error);
-    });
-  }
+//     this.ws.on("error", (error) => {
+//       console.error("WebSocket error:", error);
+//     });
+//   }
 
-  // sendMessageToClient(userId: string, message: any): void {
-  //   const payload = JSON.stringify({ user: userId, message: message });
-  //   this.ws.send(payload);
-  //   console.log(`Sent message to client ${userId}:`, message);
-  // }
+//   // sendMessageToClient(userId: string, message: any): void {
+//   //   const payload = JSON.stringify({ user: userId, message: message });
+//   //   this.ws.send(payload);
+//   //   console.log(`Sent message to client ${userId}:`, message);
+//   // }
 
-  private async connectFinders(data: any) {
-    //area for connecting finders
-    // Update array of drivers or passengers based on the received data
-    console.log(data.type);
-    if (data.type === "driver" && data.action === "add") {
-      const index = drivers.findIndex(
-        (item) => item.user._id === data.payload.user._id
-      );
+//   private async connectFinders(data: any) {
+//     //area for connecting finders
+//     // Update array of drivers or passengers based on the received data
+//     console.log(data.type);
+//     if (data.type === "driver" && data.action === "add") {
+//       const index = drivers.findIndex(
+//         (item) => item.user._id === data.payload.user._id
+//       );
 
-      if (index !== -1) drivers[index] = data.payload;
-      else drivers.push(data.payload);
-    } else if (data.type === "passenger" && data.action === "add") {
-      const index = passengers.findIndex(
-        (item) => item.user._id === data.payload.user._id
-      );
+//       if (index !== -1) drivers[index] = data.payload;
+//       else drivers.push(data.payload);
+//     } else if (data.type === "passenger" && data.action === "add") {
+//       const index = passengers.findIndex(
+//         (item) => item.user._id === data.payload.user._id
+//       );
 
-      if (index !== -1) passengers[index] = data.payload;
-      else passengers.push(data.payload);
-    }
+//       if (index !== -1) passengers[index] = data.payload;
+//       else passengers.push(data.payload);
+//     }
 
-    if (data.type === "driver" && data.action === "remove") {
-      drivers = drivers.filter(
-        (item) => item.user._id !== data.payload.user._id
-      );
-    } else if (data.type === "passenger" && data.action === "remove") {
-      passengers = passengers.filter(
-        (item) => item.user._id !== data.payload.user._id
-      );
-    }
+//     if (data.type === "driver" && data.action === "remove") {
+//       drivers = drivers.filter(
+//         (item) => item.user._id !== data.payload.user._id
+//       );
+//     } else if (data.type === "passenger" && data.action === "remove") {
+//       passengers = passengers.filter(
+//         (item) => item.user._id !== data.payload.user._id
+//       );
+//     }
 
-    const matchedPairs = await matchDriversPassengers(drivers, passengers, 1.3);
-    console.log("Matched pairs:", matchedPairs);
-    for (const matchedPair of matchedPairs) {
-      //TODO: Alert them
-      if (this.ws.readyState === WebSocket.OPEN) {
-        const pin = generateOtp(4);
-        this.ws.send(
-          JSON.stringify({
-            user: matchedPair.driver.user._id,
-            message: "We found you a passenger!",
-            passengerDetails: {
-              pin,
-              rating: 4.87,
-              // plateNumber: "AA 123AA",
-              // carName: "Toyota Corolla",
-              passengerPhoneNumber: "07083992112",
-              passengerName: `${matchedPair.driver.user.firstname} ${matchedPair.driver.user.lastname}`,
-            },
-          })
-        );
-        this.ws.send(
-          JSON.stringify({
-            user: matchedPair.passenger.user._id,
-            message: "We found you a ride!",
-            driverDetails: {
-              pin,
-              rating: 4.97,
-              plateNumber: "AA 123AA",
-              carName: "Toyota Corolla",
-              driverPhoneNumber: "07083992112",
-              driverName: `${matchedPair.driver.user.firstname} ${matchedPair.driver.user.lastname}`,
-            },
-          })
-        );
-        console.log(
-          `Sent message to client ${matchedPair.driver.user._id}:`,
-          "message"
-        );
-      } else {
-        // Queue the message if WebSocket is still connecting
-        this.messageQueue.push({
-          userId: matchedPair.driver.user._id,
-          message: "message",
-        });
-      }
-    }
-    //TODO: Remove matched pairs from passenger and driver array
-    console.log("passengers", passengers.length);
-    console.log("drivers", drivers.length);
-  }
+//     const matchedPairs = await matchDriversPassengers(drivers, passengers, 1.3);
+//     console.log("Matched pairs:", matchedPairs);
+//     for (const matchedPair of matchedPairs) {
+//       //TODO: Alert them
+//       if (this.ws.readyState === WebSocket.OPEN) {
+//         const pin = generateOtp(4);
+//         this.ws.send(
+//           JSON.stringify({
+//             user: matchedPair.driver.user._id,
+//             message: "We found you a passenger!",
+//             passengerDetails: {
+//               pin,
+//               rating: 4.87,
+//               // plateNumber: "AA 123AA",
+//               // carName: "Toyota Corolla",
+//               passengerPhoneNumber: "07083992112",
+//               passengerName: `${matchedPair.driver.user.firstname} ${matchedPair.driver.user.lastname}`,
+//             },
+//           })
+//         );
+//         this.ws.send(
+//           JSON.stringify({
+//             user: matchedPair.passenger.user._id,
+//             message: "We found you a ride!",
+//             driverDetails: {
+//               pin,
+//               rating: 4.97,
+//               plateNumber: "AA 123AA",
+//               carName: "Toyota Corolla",
+//               driverPhoneNumber: "07083992112",
+//               driverName: `${matchedPair.driver.user.firstname} ${matchedPair.driver.user.lastname}`,
+//             },
+//           })
+//         );
+//         console.log(
+//           `Sent message to client ${matchedPair.driver.user._id}:`,
+//           "message"
+//         );
+//       } else {
+//         // Queue the message if WebSocket is still connecting
+//         this.messageQueue.push({
+//           userId: matchedPair.driver.user._id,
+//           message: "message",
+//         });
+//       }
+//     }
+//     //TODO: Remove matched pairs from passenger and driver array
+//     console.log("passengers", passengers.length);
+//     console.log("drivers", drivers.length);
+//   }
 
-  sendMessageToClient(userId: string, message: any): void {
-    const payload = JSON.stringify({ user: userId, message: message });
-    if (this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(payload);
-      console.log(`Sent message to client ${userId}:`, message);
-    } else {
-      // Queue the message if WebSocket is still connecting
-      this.messageQueue.push({ userId, message });
-    }
-  }
+//   sendMessageToClient(userId: string, message: any): void {
+//     const payload = JSON.stringify({ user: userId, message: message });
+//     if (this.ws.readyState === WebSocket.OPEN) {
+//       this.ws.send(payload);
+//       console.log(`Sent message to client ${userId}:`, message);
+//     } else {
+//       // Queue the message if WebSocket is still connecting
+//       this.messageQueue.push({ userId, message });
+//     }
+//   }
 
-  private sendQueuedMessages(): void {
-    while (this.messageQueue.length > 0) {
-      const { userId, message } = this.messageQueue.shift()!;
-      this.sendMessageToClient(userId, message);
-    }
-  }
-}
+//   private sendQueuedMessages(): void {
+//     while (this.messageQueue.length > 0) {
+//       const { userId, message } = this.messageQueue.shift()!;
+//       this.sendMessageToClient(userId, message);
+//     }
+//   }
+// }
 
-new WebSocketConnection();
+//new WebSocketConnection();
 export const notifyClient = (notification: INotification) => {
   const { user } = notification;
-  const webSocketConnection = new WebSocketConnection();
+  // const webSocketConnection = new WebSocketConnection();
 
-  webSocketConnection.sendMessageToClient(
-    user.toString(),
-    JSON.stringify(notification)
-  );
+  // webSocketConnection.sendMessageToClient(
+  //   user.toString(),
+  //   JSON.stringify(notification)
+  // );
   // const userConnection = connections.get(user.toString());
   // if (userConnection) {
   //   userConnection.send(JSON.stringify(notification));

@@ -91,7 +91,7 @@ export const registerUser = async (req: Request, res: Response) => {
         html: emailTemplate.html,
       });
 
-      onNewAccountCreated(newUser.firstname, newUser._id.toString());
+      //onNewAccountCreated(newUser.firstname, newUser._id.toString());
       return res
         .status(201)
         .json({
@@ -185,7 +185,7 @@ export const loginUser = async (req: Request, res: Response) => {
       user: user._id,
     });
 
-    onNewAccountCreated(user.firstname, user._id.toString());
+    // onNewAccountCreated(user.firstname, user._id.toString());
 
     return res
       .status(200)
