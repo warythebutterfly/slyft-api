@@ -90,7 +90,7 @@ export async function matchDriversPassengers(
           : (passenger.match.riderType = null);
 
         driver.match.passengerType === "Staff or Student" &&
-          (passenger.match.riderType = null);
+          (driver.match.passengerType = null);
 
         // Check if the current passenger is a better match than the current best match
         if (passenger.match.riderType && driver.match.passengerType) {
