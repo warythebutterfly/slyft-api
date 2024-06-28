@@ -6,7 +6,7 @@ interface IUser {
   email: string;
   dateOfBirth?: Date;
   phoneNumber?: string;
-  location?: any;
+  homeAddress?: any;
   gender?: string;
   country?: string;
   avatar?: string;
@@ -43,7 +43,7 @@ const UserSchema = new Schema<IUserModel>(
     },
     dateOfBirth: { type: Date },
     phoneNumber: { type: String },
-    location: {
+    homeAddress: {
       address: { type: String, required: false },
       longitude: { type: Number, required: false },
       latitude: { type: Number, required: false },

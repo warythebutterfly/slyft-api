@@ -272,7 +272,7 @@ export const updateUser = async (req: Request, res: Response) => {
       lastname,
       dateOfBirth,
       phoneNumber,
-      location,
+      homeAddress,
       gender,
       country,
       driverLicense,
@@ -315,10 +315,10 @@ export const updateUser = async (req: Request, res: Response) => {
       lastname,
       dateOfBirth,
       phoneNumber,
-      location: {
-        address: location.address,
-        longitude: location.longitude,
-        latitude: location.latitude,
+      homeAddress: {
+        address: homeAddress.address,
+        longitude: homeAddress.longitude,
+        latitude: homeAddress.latitude,
       },
       gender,
       country,
