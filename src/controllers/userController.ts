@@ -263,6 +263,8 @@ export const getById = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     // Get user
+    console.log(req.params.id);
+    console.log(req.body);
     const userId = req.params.id;
 
     const {
