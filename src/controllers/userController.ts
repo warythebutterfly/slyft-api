@@ -206,7 +206,7 @@ export const loginUser = async (req: Request, res: Response) => {
 // @access  Private
 export const getUser = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
+    const { userId } = req.user;
 
     const user = await getUserById(userId);
 
