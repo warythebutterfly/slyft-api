@@ -749,7 +749,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 export const changePassword = async (req: Request, res: Response) => {
   try {
     //Get user
-    const { userId } = req.body;
+    const { userId } = req.user;
 
     const user = await getUserById(userId);
 
