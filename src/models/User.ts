@@ -6,6 +6,7 @@ interface IUser {
   email: string;
   dateOfBirth?: Date;
   phoneNumber?: string;
+  location?: any;
   gender?: string;
   country?: string;
   avatar?: string;
@@ -17,6 +18,13 @@ interface IUser {
   status: "Active" | "Closed" | "Deleted";
   userType: "Staff" | "Student";
   roles?: Array<string>;
+  driverLicense?: any;
+  vehicle?: any;
+  insurance?: any;
+  backgroundCheck?: any;
+  availability?: any;
+  rating?: any;
+  reviews?: any;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -35,6 +43,11 @@ const UserSchema = new Schema<IUserModel>(
     },
     dateOfBirth: { type: Date },
     phoneNumber: { type: String },
+    location: {
+      address: { type: String, required: false },
+      longitude: { type: Number, required: false },
+      latitude: { type: Number, required: false },
+    },
     gender: { type: String },
     country: { type: String },
     avatar: { type: String },
@@ -55,6 +68,51 @@ const UserSchema = new Schema<IUserModel>(
       enum: ["Staff", "Student"],
     },
     roles: [{ type: String, ref: "Role" }],
+    // Driver specific fields
+    driverLicense: {
+      licenseNumber: { type: String, required: false },
+      licenseExpiryDate: { type: Date, required: false },
+      licenseState: { type: String, required: false },
+    },
+    vehicle: {
+      vehicleMake: { type: String, required: false },
+      vehicleModel: { type: String, required: false },
+      vehicleYear: { type: Number, required: false },
+      vehicleColor: { type: String, required: false },
+      licensePlate: { type: String, required: false },
+      vehicleRegistrationExpiry: { type: Date, required: false },
+    },
+    insurance: {
+      insuranceCompany: { type: String, required: false },
+      insurancePolicyNumber: { type: String, required: false },
+      insuranceExpiryDate: { type: Date, required: false },
+    },
+    backgroundCheck: {
+      backgroundCheckStatus: {
+        type: String,
+        enum: ["Pending", "Approved", "Rejected"],
+        default: "Pending",
+      },
+      backgroundCheckDate: { type: Date },
+    },
+    availability: {
+      days: {
+        type: [String],
+        enum: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+      },
+      availableTimeStart: { type: String },
+      availableTimeEnd: { type: String },
+    },
+    rating: { type: Number, default: 0 },
+    reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
   },
   {
     versionKey: false,

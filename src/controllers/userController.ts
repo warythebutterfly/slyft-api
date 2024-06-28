@@ -91,7 +91,8 @@ export const registerUser = async (req: Request, res: Response) => {
         html: emailTemplate.html,
       });
 
-      //onNewAccountCreated(newUser.firstname, newUser._id.toString());
+      onNewAccountCreated(newUser.firstname, newUser._id.toString());
+
       return res
         .status(201)
         .json({
@@ -261,18 +262,34 @@ export const getById = async (req: Request, res: Response) => {
 // @access  Private
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    //Get user
+    // Get user
     const userId = req.params.id;
-    let { firstname, lastname, dateOfBirth } = req.body;
-    const { phoneNumber, gender, country } = req.body;
-    //TODO:store user avatar
+
+    const {
+      firstname,
+      lastname,
+      dateOfBirth,
+      phoneNumber,
+      location,
+      gender,
+      country,
+      driverLicense,
+      vehicle,
+      insurance,
+      backgroundCheckStatus,
+      backgroundCheckDate,
+      availability,
+    } = req.body;
+
+    //TODO: store user avatar
     //const file = req.file;
 
-    if (!userId)
+    if (!userId) {
       return res.status(400).json({
         success: false,
         errors: ["UserId was not supplied."],
       });
+    }
 
     const userExists = await UserModel.findById(userId);
 
@@ -283,12 +300,7 @@ export const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    //User should not be update these after the first update
-    firstname = userExists.firstname ? userExists.firstname : firstname;
-    lastname = userExists.lastname ? userExists.lastname : lastname;
-    dateOfBirth = userExists.dateOfBirth ? userExists.dateOfBirth : dateOfBirth;
-
-    const avatarUrl: string = null;
+    let avatarUrl: string = null;
 
     // Enhancement: Offload to a queue
     // if (file) {
@@ -301,9 +313,41 @@ export const updateUser = async (req: Request, res: Response) => {
       lastname,
       dateOfBirth,
       phoneNumber,
+      location: {
+        address: location.address,
+        longitude: location.longitude,
+        latitude: location.latitude,
+      },
       gender,
       country,
       ...(avatarUrl ? { avatar: avatarUrl } : {}),
+      driverLicense: {
+        licenseNumber: driverLicense.licenseNumber,
+        licenseExpiryDate: driverLicense.licenseExpiryDate,
+        licenseState: driverLicense.licenseState,
+      },
+      vehicle: {
+        vehicleMake: vehicle.vehicleMake,
+        vehicleModel: vehicle.vehicleModel,
+        vehicleYear: vehicle.vehicleYear,
+        vehicleColor: vehicle.vehicleColor,
+        licensePlate: vehicle.licensePlate,
+        vehicleRegistrationExpiry: vehicle.vehicleRegistrationExpiry,
+      },
+      insurance: {
+        insuranceCompany: insurance.insuranceCompany,
+        insurancePolicyNumber: insurance.insurancePolicyNumber,
+        insuranceExpiryDate: insurance.insuranceExpiryDate,
+      },
+      backgroundCheck: {
+        backgroundCheckStatus: backgroundCheckStatus,
+        backgroundCheckDate: backgroundCheckDate,
+      },
+      availability: {
+        days: availability.days,
+        availableTimeStart: availability.availableTimeStart,
+        availableTimeEnd: availability.availableTimeEnd,
+      },
     });
 
     return res
@@ -810,7 +854,6 @@ export interface Passenger {
   user: any;
 }
 
-
 // function matchDriversPassengers2(drivers: Driver[], passengers: Passenger[]) {
 //   console.log("got here just fine");
 //   const graph = new BipartiteGraph<Driver, Passenger>();
@@ -867,7 +910,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c; // Distance in kilometers
-  
+
   return distance;
 }
 

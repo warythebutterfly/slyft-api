@@ -245,7 +245,7 @@ const startServer = async () => {
   //     `Driver ${pair.driver.user._id} matched with Passenger ${pair.passenger.user._id}`
   //   );
   // });
-  setInterval(() => console.log("keep server alive"), 60000);
+
   app.listen(config.server.port, () => {
     return console.log(
       `Express is listening at http://localhost:${config.server.port}`
