@@ -6,11 +6,11 @@ import { getUserById } from "../controllers/user";
 import Logging from "../library/Logging";
 dotenv.config();
 
-// declare module "express-serve-static-core" {
-//   interface Request {
-//     user?: any;
-//   }
-// }
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: any;
+  }
+}
 
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,7 +27,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     const { status } = await getUserById(decoded.userId);
     if (status !== "Active") return res.status(401).send("Not authorized.");
 
-    req.body = decoded;
+    req.user = decoded;
 
     next();
   } catch (err) {

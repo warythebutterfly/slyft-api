@@ -263,8 +263,6 @@ export const getById = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     // Get user
-    console.log(req.params.id);
-    console.log(req.body);
     const userId = req.params.id;
 
     const {
@@ -316,39 +314,39 @@ export const updateUser = async (req: Request, res: Response) => {
       dateOfBirth,
       phoneNumber,
       homeAddress: {
-        address: homeAddress.address,
-        longitude: homeAddress.longitude,
-        latitude: homeAddress.latitude,
+        address: homeAddress?.address,
+        longitude: homeAddress?.longitude,
+        latitude: homeAddress?.latitude,
       },
       gender,
       country,
       ...(avatarUrl ? { avatar: avatarUrl } : {}),
       driverLicense: {
-        licenseNumber: driverLicense.licenseNumber,
-        licenseExpiryDate: driverLicense.licenseExpiryDate,
-        licenseState: driverLicense.licenseState,
+        licenseNumber: driverLicense?.licenseNumber,
+        licenseExpiryDate: driverLicense?.licenseExpiryDate,
+        licenseState: driverLicense?.licenseState,
       },
       vehicle: {
-        vehicleMake: vehicle.vehicleMake,
-        vehicleModel: vehicle.vehicleModel,
-        vehicleYear: vehicle.vehicleYear,
-        vehicleColor: vehicle.vehicleColor,
-        licensePlate: vehicle.licensePlate,
-        vehicleRegistrationExpiry: vehicle.vehicleRegistrationExpiry,
+        vehicleMake: vehicle?.vehicleMake,
+        vehicleModel: vehicle?.vehicleModel,
+        vehicleYear: vehicle?.vehicleYear,
+        vehicleColor: vehicle?.vehicleColor,
+        licensePlate: vehicle?.licensePlate,
+        vehicleRegistrationExpiry: vehicle?.vehicleRegistrationExpiry,
       },
       insurance: {
-        insuranceCompany: insurance.insuranceCompany,
-        insurancePolicyNumber: insurance.insurancePolicyNumber,
-        insuranceExpiryDate: insurance.insuranceExpiryDate,
+        insuranceCompany: insurance?.insuranceCompany,
+        insurancePolicyNumber: insurance?.insurancePolicyNumber,
+        insuranceExpiryDate: insurance?.insuranceExpiryDate,
       },
       backgroundCheck: {
         backgroundCheckStatus: backgroundCheckStatus,
         backgroundCheckDate: backgroundCheckDate,
       },
       availability: {
-        days: availability.days,
-        availableTimeStart: availability.availableTimeStart,
-        availableTimeEnd: availability.availableTimeEnd,
+        days: availability?.days,
+        availableTimeStart: availability?.availableTimeStart,
+        availableTimeEnd: availability?.availableTimeEnd,
       },
     });
 
