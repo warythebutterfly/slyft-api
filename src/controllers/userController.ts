@@ -276,8 +276,8 @@ export const updateUser = async (req: Request, res: Response) => {
       driverLicense,
       vehicle,
       insurance,
-      backgroundCheckStatus,
-      backgroundCheckDate,
+      // backgroundCheckStatus,
+      // backgroundCheckDate,
       availability,
     } = req.body;
 
@@ -339,10 +339,10 @@ export const updateUser = async (req: Request, res: Response) => {
         insurancePolicyNumber: insurance?.insurancePolicyNumber,
         insuranceExpiryDate: insurance?.insuranceExpiryDate,
       },
-      backgroundCheck: {
-        backgroundCheckStatus: backgroundCheckStatus,
-        backgroundCheckDate: backgroundCheckDate,
-      },
+      // backgroundCheck: {
+      //   backgroundCheckStatus: backgroundCheckStatus,
+      //   backgroundCheckDate: backgroundCheckDate,
+      // },
       availability: {
         days: availability?.days,
         availableTimeStart: availability?.availableTimeStart,

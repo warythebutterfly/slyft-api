@@ -21,7 +21,7 @@ interface IUser {
   driverLicense?: any;
   vehicle?: any;
   insurance?: any;
-  backgroundCheck?: any;
+  //backgroundCheck?: any;
   availability?: any;
   rating?: any;
   reviews?: any;
@@ -87,14 +87,14 @@ const UserSchema = new Schema<IUserModel>(
       insurancePolicyNumber: { type: String, required: false },
       insuranceExpiryDate: { type: Date, required: false },
     },
-    backgroundCheck: {
-      backgroundCheckStatus: {
-        type: String,
-        enum: ["Pending", "Approved", "Rejected"],
-        default: "Pending",
-      },
-      backgroundCheckDate: { type: Date },
-    },
+    // backgroundCheck: {
+    //   backgroundCheckStatus: {
+    //     type: String,
+    //     enum: ["Pending", "Approved", "Rejected"],
+    //     default: "Pending",
+    //   },
+    //   backgroundCheckDate: { type: Date },
+    // },
     availability: {
       days: {
         type: [String],
