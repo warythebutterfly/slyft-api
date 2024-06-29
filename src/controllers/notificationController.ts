@@ -203,12 +203,11 @@ export class WebSocketConnection {
             user: matchedPair.driver.user._id,
             message: "We found you a passenger!",
             passengerDetails: {
-              pin,
-              rating: 4.87,
+              rating: matchedPair.passenger.user.rating,
               // plateNumber: "AA 123AA",
               // carName: "Toyota Corolla",
-              passengerPhoneNumber: "07083992112",
-              passengerName: `${matchedPair.driver.user.firstname} ${matchedPair.driver.user.lastname}`,
+              passengerPhoneNumber: matchedPair.passenger.user.phoneNumber,
+              passengerName: `${matchedPair.passenger.user.firstname} ${matchedPair.passenger.user.lastname}`,
             },
           })
         );
@@ -217,13 +216,9 @@ export class WebSocketConnection {
             user: matchedPair.passenger.user._id,
             message: "We found you a ride!",
             driverDetails: {
-              pin,
               rating: matchedPair.driver.user.rating,
               plateNumber: matchedPair.driver.user.vehicle.licensePlate,
-              carName:
-                matchedPair.driver.user.vehicle.vehicleColor +
-                matchedPair.driver.user.vehicle.vehicleMake +
-                matchedPair.driver.user.vehicle.vehicleModel,
+              carName: `${matchedPair.driver.user.vehicle.vehicleColor} ${matchedPair.driver.user.vehicle.vehicleMake}${matchedPair.driver.user.vehicle.vehicleModel}`,
               driverPhoneNumber: matchedPair.driver.user.phoneNumber,
               driverName: `${matchedPair.driver.user.firstname} ${matchedPair.driver.user.lastname}`,
             },
