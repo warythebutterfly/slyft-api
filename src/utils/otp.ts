@@ -6,7 +6,7 @@ import Logging from "../library/Logging";
 import verifyEmailTemplate from "../templates/verify-email";
 
 //GENERATE OTP
-export const generateOtp = function (len: number): string {
+export const generateOtp = async function (len: number): Promise<string> {
   const digits = "0123456789";
   let OTP = "";
   for (let i = 0; i < len; i++) {
@@ -18,7 +18,7 @@ export const generateOtp = function (len: number): string {
 export const sendVerifyEmailOtp = async (email: string) => {
   try {
     const otpExpirationMinutes = 5;
-    const otp: string = generateOtp(6);
+    const otp = await generateOtp(6);
     const otpExpiration = new Date();
     otpExpiration.setMinutes(otpExpiration.getMinutes() + otpExpirationMinutes);
 
@@ -68,7 +68,7 @@ export const sendEmailOtp = async (email: string, firstname: string) => {
 
     //GENERATE OTP FOR FORGOT PASWORD
     const otpExpirationMinutes = 5;
-    const otp: string = generateOtp(6);
+    const otp = await generateOtp(6);
     const otpExpiration = new Date();
     otpExpiration.setMinutes(otpExpiration.getMinutes() + otpExpirationMinutes);
 

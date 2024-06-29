@@ -22,7 +22,7 @@ interface IUser {
   vehicle?: any;
   insurance?: any;
   //backgroundCheck?: any;
-  availability?: any;
+  //availability?: any;
   rating?: any;
   reviews?: any;
   updatedAt: Date;
@@ -77,7 +77,7 @@ const UserSchema = new Schema<IUserModel>(
     vehicle: {
       vehicleMake: { type: String, required: false },
       vehicleModel: { type: String, required: false },
-      vehicleYear: { type: Number, required: false },
+      vehicleYear: { type: String, required: false },
       vehicleColor: { type: String, required: false },
       licensePlate: { type: String, required: false },
       vehicleRegistrationExpiry: { type: Date, required: false },
@@ -95,22 +95,22 @@ const UserSchema = new Schema<IUserModel>(
     //   },
     //   backgroundCheckDate: { type: Date },
     // },
-    availability: {
-      days: {
-        type: [String],
-        enum: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ],
-      },
-      availableTimeStart: { type: String },
-      availableTimeEnd: { type: String },
-    },
+    // availability: {
+    //   days: {
+    //     type: [String],
+    //     enum: [
+    //       "Monday",
+    //       "Tuesday",
+    //       "Wednesday",
+    //       "Thursday",
+    //       "Friday",
+    //       "Saturday",
+    //       "Sunday",
+    //     ],
+    //   },
+    //   availableTimeStart: { type: String },
+    //   availableTimeEnd: { type: String },
+    // },
     rating: { type: Number, default: 0 },
     reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
   },

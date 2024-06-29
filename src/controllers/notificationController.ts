@@ -113,7 +113,9 @@ export class WebSocketConnection {
 
   constructor() {
     this.messageQueue = [];
-    this.ws = new WebSocket("wss://free.blr2.piesocket.com/v3/1?api_key=dKA1PcoBPSDNAVPH8sUOpn6LTHEaArJjWJomLZ9U&notify_self=1");
+    this.ws = new WebSocket(
+      "wss://free.blr2.piesocket.com/v3/1?api_key=dKA1PcoBPSDNAVPH8sUOpn6LTHEaArJjWJomLZ9U&notify_self=1"
+    );
 
     this.ws.on("open", () => {
       console.log("Connected to WebSocket server");
@@ -195,7 +197,7 @@ export class WebSocketConnection {
     for (const matchedPair of matchedPairs) {
       //TODO: Alert them
       if (this.ws.readyState === WebSocket.OPEN) {
-        const pin = generateOtp(4);
+        const pin = await generateOtp(4);
         this.ws.send(
           JSON.stringify({
             user: matchedPair.driver.user._id,
@@ -216,10 +218,13 @@ export class WebSocketConnection {
             message: "We found you a ride!",
             driverDetails: {
               pin,
-              rating: 4.97,
-              plateNumber: "AA 123AA",
-              carName: "Toyota Corolla",
-              driverPhoneNumber: "07083992112",
+              rating: matchedPair.driver.user.rating,
+              plateNumber: matchedPair.driver.user.vehicle.licensePlate,
+              carName:
+                matchedPair.driver.user.vehicle.vehicleColor +
+                matchedPair.driver.user.vehicle.vehicleMake +
+                matchedPair.driver.user.vehicle.vehicleModel,
+              driverPhoneNumber: matchedPair.driver.user.phoneNumber,
               driverName: `${matchedPair.driver.user.firstname} ${matchedPair.driver.user.lastname}`,
             },
           })

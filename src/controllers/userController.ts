@@ -278,7 +278,7 @@ export const updateUser = async (req: Request, res: Response) => {
       insurance,
       // backgroundCheckStatus,
       // backgroundCheckDate,
-      availability,
+      //availability,
     } = req.body;
 
     //TODO: store user avatar
@@ -343,11 +343,11 @@ export const updateUser = async (req: Request, res: Response) => {
       //   backgroundCheckStatus: backgroundCheckStatus,
       //   backgroundCheckDate: backgroundCheckDate,
       // },
-      availability: {
-        days: availability?.days,
-        availableTimeStart: availability?.availableTimeStart,
-        availableTimeEnd: availability?.availableTimeEnd,
-      },
+      // availability: {
+      //   days: availability?.days,
+      //   availableTimeStart: availability?.availableTimeStart,
+      //   availableTimeEnd: availability?.availableTimeEnd,
+      // },
     });
 
     return res
