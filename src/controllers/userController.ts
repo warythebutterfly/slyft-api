@@ -808,6 +808,88 @@ export const changePassword = async (req: Request, res: Response) => {
 };
 let drivers: any = new Map();
 let passengers: any = new Map();
+const passenger1 = {
+  destination: {
+    description:
+      "Faculty of Social Science, UNILAG, Commercial Road, Lagos, Nigeria",
+    location: {
+      lat: 6.515889199999999,
+      lng: 3.391666,
+    },
+  },
+  match: {
+    riderType: "Slyft for Student", // this user is a passenger that wants a Student as his driver
+    userType: "Student", //this user is a passenger that is a student
+  },
+  origin: {
+    description: "Oredola Street, Lagos, Nigeria",
+    location: {
+      lat: 6.5288565,
+      lng: 3.3809722,
+    },
+  },
+  user: {
+    _id: "65ffi56346i274808944b98",
+    userType: "Student",
+  },
+};
+const passenger2 = {
+  destination: {
+    description:
+      "Faculty of Social Science, UNILAG, Commercial Road, Lagos, Nigeria",
+    location: {
+      lat: 6.515889199999999,
+      lng: 3.391666,
+    },
+  },
+  match: {
+    riderType: "Slyft for Student", // this user is a passenger that wants a Student as his driver
+    userType: "Student", //this user is a passenger that is a student
+  },
+  origin: {
+    description: "Oredola Street, Lagos, Nigeria",
+    location: {
+      lat: 6.5288565,
+      lng: 3.3809722,
+    },
+  },
+  user: {
+    _id: "65ffi56346i274808944b98",
+    userType: "Student",
+  },
+};
+const passenger3 = {
+  destination: {
+    description:
+      "Faculty of Social Science, UNILAG, Commercial Road, Lagos, Nigeria",
+    location: {
+      lat: 6.515889199999999,
+      lng: 3.391666,
+    },
+  },
+  match: {
+    riderType: "Slyft for Student", // this user is a passenger that wants a Student as his driver
+    userType: "Student", //this user is a passenger that is a student
+  },
+  origin: {
+    description: "Oredola Street, Lagos, Nigeria",
+    location: {
+      lat: 6.5288565,
+      lng: 3.3809722,
+    },
+  },
+  user: {
+    _id: "65ffi56346i274808944b98",
+    userType: "Student",
+  },
+};
+
+// let drivers: Driver[] = [driver1, driver2, driver3]; // Array of driver objects
+passengers.set(passenger1);
+passengers.set(passenger2);
+passengers.set(passenger3);
+
+console.log(passengers);
 // @desc    Register a new user
 // @route   POST /v1/ride/offer-ride
 // @access  Public
