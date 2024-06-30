@@ -895,9 +895,9 @@ console.log(passengers);
 // @access  Public
 export const offerRide = async (req: Request, res: Response) => {
   try {
-    const { userId, rideDetails, driverDetails } = req.body;
-    drivers.set(userId, rideDetails);
-    let matches = await matchDriverPassengers(driverDetails, passengers, 1.3);
+    const { rideInformation } = req.body;
+    drivers.set(rideInformation.user._id, rideInformation);
+    let matches = await matchDriverPassengers(rideInformation, passengers, 1.3);
     return res
       .status(201)
       .json({ message: "Ride offered successfully", data: matches });
@@ -915,8 +915,8 @@ export const offerRide = async (req: Request, res: Response) => {
 // @access  Public
 export const requestRide = async (req: Request, res: Response) => {
   try {
-    const { userId, rideDetails, passengerDetails } = req.body;
-    passengers.set(userId, rideDetails);
+    const { rideInformation } = req.body;
+    passengers.set(rideInformation.user._id, rideInformation);
     return res.status(200).json({ message: "Ride requested successfully" });
   } catch (error) {
     Logging.error(error);
