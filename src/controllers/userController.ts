@@ -854,7 +854,7 @@ const passenger2 = {
     },
   },
   user: {
-    _id: "65ffi56346i274808944b98",
+    _id: "65ffi56346i274808944b97",
     userType: "Student",
   },
 };
@@ -879,7 +879,7 @@ const passenger3 = {
     },
   },
   user: {
-    _id: "65ffi56346i274808944b98",
+    _id: "65ffi56346i274808944b96",
     userType: "Student",
   },
 };
@@ -912,13 +912,25 @@ export const offerRide = async (req: Request, res: Response) => {
   }
 };
 
+
 // @desc    Register a new user
 // @route   POST /v1/ride/request-ride
 // @access  Public
 export const requestRide = async (req: Request, res: Response) => {
   try {
     const { rideInformation } = req.body;
-    passengers.push(rideInformation);
+    const passengerIndex: number = passengers.findIndex(
+      (passenger) => passenger.user._id === rideInformation.user._id
+    );
+
+    if (passengerIndex >= 0) {
+      // Passenger exists, replace with the new ride information
+      passengers[passengerIndex] = rideInformation;
+    } else {
+      // Passenger does not exist, push the new ride information
+      passengers.push(rideInformation);
+    }
+
     return res
       .status(200)
       .json({ success: true, message: "Ride requested successfully" });
