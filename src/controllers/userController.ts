@@ -806,8 +806,8 @@ export const changePassword = async (req: Request, res: Response) => {
     });
   }
 };
-let drivers: any = new Map();
-let passengers: any = new Map();
+let drivers: any = [];
+let passengers: any = [];
 const passenger1 = {
   destination: {
     description:
@@ -885,9 +885,9 @@ const passenger3 = {
 };
 
 // let drivers: Driver[] = [driver1, driver2, driver3]; // Array of driver objects
-passengers.set(passenger1);
-passengers.set(passenger2);
-passengers.set(passenger3);
+passengers.push(passenger1);
+passengers.push(passenger2);
+passengers.push(passenger3);
 
 console.log(passengers);
 // @desc    Register a new user
@@ -896,7 +896,7 @@ console.log(passengers);
 export const offerRide = async (req: Request, res: Response) => {
   try {
     const { rideInformation } = req.body;
-    drivers.set(rideInformation.user._id, rideInformation);
+    drivers.push(rideInformation);
     let matches = await matchDriverPassengers(rideInformation, passengers, 1.3);
     return res
       .status(201)
@@ -916,7 +916,7 @@ export const offerRide = async (req: Request, res: Response) => {
 export const requestRide = async (req: Request, res: Response) => {
   try {
     const { rideInformation } = req.body;
-    passengers.set(rideInformation.user._id, rideInformation);
+    passengers.push(rideInformation);
     return res.status(200).json({ message: "Ride requested successfully" });
   } catch (error) {
     Logging.error(error);

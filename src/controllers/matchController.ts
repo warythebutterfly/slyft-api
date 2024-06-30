@@ -252,6 +252,8 @@ export async function matchDriverPassengers(
   distanceThreshold: number
 ) {
   try {
+    console.log(driver.origin.location);
+    console.log(passengers);
     let matches = []; // Array to store matched pairs
 
     // Convert distance threshold from kilometers to meters
