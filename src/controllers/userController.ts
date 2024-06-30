@@ -898,9 +898,11 @@ export const offerRide = async (req: Request, res: Response) => {
     const { rideInformation } = req.body;
     drivers.push(rideInformation);
     let matches = await matchDriverPassengers(rideInformation, passengers, 1.3);
-    return res
-      .status(201)
-      .json({ message: "Ride offered successfully", data: matches });
+    return res.status(201).json({
+      success: true,
+      message: "Ride offered successfully",
+      data: matches,
+    });
   } catch (error) {
     Logging.error(error);
     return res.status(500).json({
@@ -917,7 +919,9 @@ export const requestRide = async (req: Request, res: Response) => {
   try {
     const { rideInformation } = req.body;
     passengers.push(rideInformation);
-    return res.status(200).json({ message: "Ride requested successfully" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Ride requested successfully" });
   } catch (error) {
     Logging.error(error);
     return res.status(500).json({
@@ -956,7 +960,9 @@ export const acceptRide = async (req: Request, res: Response) => {
     // Remove the driver from the map
     drivers.delete(driverId);
 
-    return res.status(201).json({ message: "Ride accepted successfully" });
+    return res
+      .status(201)
+      .json({ success: true, message: "Ride accepted successfully" });
   } catch (error) {
     Logging.error(error);
     return res.status(500).json({
