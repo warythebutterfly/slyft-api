@@ -23,6 +23,7 @@ import closeAccountEmailTemplate from "../templates/close-account";
 import confirmCloseAccountEmailTemplate from "../templates/confirm-close-account";
 import reactivaeAccountEmailTemplate from "../templates/reactivate-account";
 import { onNewAccountCreated } from "./notificationController";
+import { matchDriverPassengers } from "./matchController";
 // import { BipartiteGraph } from "bipartite-matching";
 // import { hungarian } from "bipartite-matching";
 
@@ -802,6 +803,83 @@ export const changePassword = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       errors: ["Internal Server Error. Please try again later."],
+    });
+  }
+};
+let drivers: any = new Map();
+let passengers: any = new Map();
+// @desc    Register a new user
+// @route   POST /v1/ride/offer-ride
+// @access  Public
+export const offerRide = async (req: Request, res: Response) => {
+  try {
+    const { userId, rideDetails, driverDetails } = req.body;
+    drivers.set(userId, rideDetails);
+    let matches = await matchDriverPassengers(driverDetails, passengers, 1.3);
+    return res
+      .status(201)
+      .json({ message: "Ride offered successfully", data: matches });
+  } catch (error) {
+    Logging.error(error);
+    return res.status(500).json({
+      success: false,
+      errors: ["Internal Server Error. Please try again later.", error.message],
+    });
+  }
+};
+
+// @desc    Register a new user
+// @route   POST /v1/ride/request-ride
+// @access  Public
+export const requestRide = async (req: Request, res: Response) => {
+  try {
+    const { userId, rideDetails, passengerDetails } = req.body;
+    passengers.set(userId, rideDetails);
+    return res.status(200).json({ message: "Ride requested successfully" });
+  } catch (error) {
+    Logging.error(error);
+    return res.status(500).json({
+      success: false,
+      errors: ["Internal Server Error. Please try again later.", error.message],
+    });
+  }
+};
+
+// @desc    Register a new user
+// @route   POST /v1/ride/accept
+// @access  Public
+export const acceptRide = async (req: Request, res: Response) => {
+  try {
+    const { driverId, passengerId } = req.body;
+
+    if (!driverId || !passengerId) {
+      return res
+        .status(400)
+        .json({ message: "Driver ID and Passenger ID are required" });
+    }
+
+    // Check if the passenger exists in the map
+    if (!passengers.has(passengerId)) {
+      return res.status(404).json({ message: "Passenger not found" });
+    }
+
+    // Check if the driver exists in the map
+    if (!drivers.has(driverId)) {
+      return res.status(404).json({ message: "Driver not found" });
+    }
+
+    // Remove the accepted passenger from the map
+    passengers.delete(passengerId);
+
+    // Remove the driver from the map
+    drivers.delete(driverId);
+
+    return res.status(201).json({ message: "Ride accepted successfully" });
+  } catch (error) {
+    Logging.error(error);
+    return res.status(500).json({
+      success: false,
+      errors: ["Internal Server Error. Please try again later.", error.message],
     });
   }
 };

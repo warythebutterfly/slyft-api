@@ -12,6 +12,9 @@ import {
   removeUser,
   changePassword,
   verifyEmail,
+  offerRide,
+  requestRide,
+  acceptRide,
 } from "../controllers/userController";
 import { auth, reactivate } from "../middleware/auth";
 import {
@@ -23,7 +26,10 @@ import {
   get as getPermissions,
 } from "../controllers/permissionController";
 import { get, create } from "../controllers/rolePermissionController";
-import { imageUpload } from "../middleware/multer";
+import {
+  matchDriverPassengers,
+  matchDriversPassengers,
+} from "../controllers/matchController";
 
 export default (router: Router) => {
   router.post("/user/auth/register", registerUser);
@@ -46,4 +52,7 @@ export default (router: Router) => {
     .get(auth, getPermissions)
     .post(auth, createPermission);
   router.route("/user/role-permission").get(auth, get).post(auth, create);
+  router.post("/ride/offer-ride", offerRide);
+  router.post("/ride/request-ride", requestRide);
+  router.post("/ride/accept", acceptRide);
 };

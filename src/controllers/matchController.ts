@@ -29,6 +29,127 @@ export interface Passenger {
   origin: Location;
   user: any;
 }
+// // Function to match drivers with passengers
+// export async function matchDriversPassengers(
+//   drivers: Driver[],
+//   passengers: Passenger[],
+//   distanceThreshold: number
+// ) {
+//   try {
+//     let matches = []; // Array to store matched pairs
+
+//     // Convert distance threshold from kilometers to meters
+//     const distanceThresholdMeters = distanceThreshold * 1000;
+
+//     // Iterate through each driver
+//     for (let driver of drivers) {
+//       let bestMatch = null; // Variable to store the best passenger match
+//       let bestDistance = Number.MAX_VALUE; // Initialize best distance to a very large number
+
+//       // Iterate through each passenger to find the best match for the current driver
+//       for (let passenger of passengers) {
+//         // Calculate the distance between the origins and destinations of the driver and passenger
+//         const originDistance = calculateDistance(
+//           driver.origin.location.lat,
+//           driver.origin.location.lng,
+//           passenger.origin.location.lat,
+//           passenger.origin.location.lng
+//         );
+//         const destinationDistance = calculateDistance(
+//           driver.destination.location.lat,
+//           driver.destination.location.lng,
+//           passenger.destination.location.lat,
+//           passenger.destination.location.lng
+//         );
+
+//         // Convert distances from kilometers to meters
+//         const originDistanceMeters = originDistance * 1000;
+//         const destinationDistanceMeters = destinationDistance * 1000;
+
+//         // console.log(
+//         //   originDistanceMeters,
+//         //   distanceThresholdMeters,
+//         //   destinationDistanceMeters
+//         // );
+
+//         console.log(destinationDistanceMeters, distanceThresholdMeters);
+//         console.log(destinationDistanceMeters < distanceThresholdMeters);
+//         // Check if either the origin or destination distance exceeds the threshold
+//         if (
+//           originDistanceMeters > distanceThresholdMeters ||
+//           destinationDistanceMeters > distanceThresholdMeters
+//         ) {
+//           // Skip this passenger if either the origin or destination is too far from the driver
+//           continue;
+//         }
+
+//         passenger.match.riderType === "Slyft for Student"
+//           ? (passenger.match.riderType = "Student")
+//           : passenger.match.riderType === "Slyft for Staff"
+//           ? (passenger.match.riderType = "Staff")
+//           : (passenger.match.riderType = null);
+
+//         driver.match.passengerType === "Staff or Student" &&
+//           (driver.match.passengerType = null);
+
+//         // Check if the current passenger is a better match than the current best match
+//         if (passenger.match.riderType && driver.match.passengerType) {
+//           console.log(driver.match.passengerType, passenger.user.userType);
+//           console.log(passenger.match.riderType, driver.user.userType);
+//           if (
+//             originDistance < bestDistance &&
+//             destinationDistance < bestDistance &&
+//             driver.match.passengerType === passenger.user.userType &&
+//             passenger.match.riderType === driver.user.userType
+//           ) {
+//             // Update the best match and best distance
+//             bestMatch = passenger;
+//             bestDistance = Math.max(originDistance, destinationDistance);
+//           }
+//         } else if (passenger.match.riderType) {
+//           if (
+//             originDistance < bestDistance &&
+//             destinationDistance < bestDistance &&
+//             passenger.match.riderType === driver.user.userType
+//           ) {
+//             // Update the best match and best distance
+//             bestMatch = passenger;
+//             bestDistance = Math.max(originDistance, destinationDistance);
+//           }
+//         } else if (driver.match.passengerType) {
+//           if (
+//             originDistance < bestDistance &&
+//             destinationDistance < bestDistance &&
+//             driver.match.passengerType === passenger.user.userType
+//           ) {
+//             // Update the best match and best distance
+//             bestMatch = passenger;
+//             bestDistance = Math.max(originDistance, destinationDistance);
+//           }
+//         } else {
+//           if (
+//             originDistance < bestDistance &&
+//             destinationDistance < bestDistance
+//           ) {
+//             // Update the best match and best distance
+//             bestMatch = passenger;
+//             bestDistance = Math.max(originDistance, destinationDistance);
+//           }
+//         }
+//       }
+
+//       // If a best match was found, add the driver-passenger pair to the matches array
+//       if (bestMatch) {
+//         matches.push({ driver, passenger: bestMatch });
+//       }
+//     }
+
+//     return matches; // Return the matched pairs
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
+
 // Function to match drivers with passengers
 export async function matchDriversPassengers(
   drivers: Driver[],
@@ -43,10 +164,9 @@ export async function matchDriversPassengers(
 
     // Iterate through each driver
     for (let driver of drivers) {
-      let bestMatch = null; // Variable to store the best passenger match
-      let bestDistance = Number.MAX_VALUE; // Initialize best distance to a very large number
+      let bestMatches = []; // Array to store the best passenger matches
 
-      // Iterate through each passenger to find the best match for the current driver
+      // Iterate through each passenger to find the best matches for the current driver
       for (let passenger of passengers) {
         // Calculate the distance between the origins and destinations of the driver and passenger
         const originDistance = calculateDistance(
@@ -66,14 +186,6 @@ export async function matchDriversPassengers(
         const originDistanceMeters = originDistance * 1000;
         const destinationDistanceMeters = destinationDistance * 1000;
 
-        // console.log(
-        //   originDistanceMeters,
-        //   distanceThresholdMeters,
-        //   destinationDistanceMeters
-        // );
-
-        console.log(destinationDistanceMeters, distanceThresholdMeters);
-        console.log(destinationDistanceMeters < distanceThresholdMeters);
         // Check if either the origin or destination distance exceeds the threshold
         if (
           originDistanceMeters > distanceThresholdMeters ||
@@ -83,66 +195,143 @@ export async function matchDriversPassengers(
           continue;
         }
 
-        passenger.match.riderType === "Slyft for Student"
-          ? (passenger.match.riderType = "Student")
-          : passenger.match.riderType === "Slyft for Staff"
-          ? (passenger.match.riderType = "Staff")
-          : (passenger.match.riderType = null);
+        // Simplify rider type checks
+        passenger.match.riderType =
+          passenger.match.riderType === "Slyft for Student"
+            ? "Student"
+            : passenger.match.riderType === "Slyft for Staff"
+            ? "Staff"
+            : null;
 
         driver.match.passengerType === "Staff or Student" &&
           (driver.match.passengerType = null);
 
-        // Check if the current passenger is a better match than the current best match
-        if (passenger.match.riderType && driver.match.passengerType) {
-          console.log(driver.match.passengerType, passenger.user.userType);
-          console.log(passenger.match.riderType, driver.user.userType);
-          if (
-            originDistance < bestDistance &&
-            destinationDistance < bestDistance &&
-            driver.match.passengerType === passenger.user.userType &&
-            passenger.match.riderType === driver.user.userType
-          ) {
-            // Update the best match and best distance
-            bestMatch = passenger;
-            bestDistance = Math.max(originDistance, destinationDistance);
-          }
-        } else if (passenger.match.riderType) {
-          if (
-            originDistance < bestDistance &&
-            destinationDistance < bestDistance &&
-            passenger.match.riderType === driver.user.userType
-          ) {
-            // Update the best match and best distance
-            bestMatch = passenger;
-            bestDistance = Math.max(originDistance, destinationDistance);
-          }
-        } else if (driver.match.passengerType) {
-          if (
-            originDistance < bestDistance &&
-            destinationDistance < bestDistance &&
-            driver.match.passengerType === passenger.user.userType
-          ) {
-            // Update the best match and best distance
-            bestMatch = passenger;
-            bestDistance = Math.max(originDistance, destinationDistance);
-          }
-        } else {
-          if (
-            originDistance < bestDistance &&
-            destinationDistance < bestDistance
-          ) {
-            // Update the best match and best distance
-            bestMatch = passenger;
-            bestDistance = Math.max(originDistance, destinationDistance);
-          }
+        // Determine if the passenger is a valid match for the driver
+        const isMatch =
+          passenger.match.riderType &&
+          driver.match.passengerType &&
+          driver.match.passengerType === passenger.user.userType &&
+          passenger.match.riderType === driver.user.userType;
+
+        if (
+          isMatch ||
+          (!passenger.match.riderType &&
+            driver.match.passengerType === passenger.user.userType) ||
+          (!driver.match.passengerType &&
+            passenger.match.riderType === driver.user.userType) ||
+          (!passenger.match.riderType && !driver.match.passengerType)
+        ) {
+          bestMatches.push({
+            passenger,
+            distance: Math.max(originDistance, destinationDistance),
+          });
         }
       }
 
-      // If a best match was found, add the driver-passenger pair to the matches array
-      if (bestMatch) {
-        matches.push({ driver, passenger: bestMatch });
+      // Sort the best matches by distance and pick the top 3
+      bestMatches.sort((a, b) => a.distance - b.distance);
+      const top3Matches = bestMatches.slice(0, 3);
+
+      // Add the best matches to the results
+      matches.push({
+        driver,
+        passengers: top3Matches.map((match) => match.passenger),
+      });
+    }
+
+    return matches; // Return the matched pairs
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+// Function to match driver with passengers
+export async function matchDriverPassengers(
+  driver: Driver,
+  passengers: Passenger[],
+  distanceThreshold: number
+) {
+  try {
+    let matches = []; // Array to store matched pairs
+
+    // Convert distance threshold from kilometers to meters
+    const distanceThresholdMeters = distanceThreshold * 1000;
+
+    // Iterate through each driver
+
+    let bestMatches = []; // Array to store the best passenger matches
+
+    // Iterate through each passenger to find the best matches for the current driver
+    for (let passenger of passengers) {
+      // Calculate the distance between the origins and destinations of the driver and passenger
+      const originDistance = calculateDistance(
+        driver.origin.location.lat,
+        driver.origin.location.lng,
+        passenger.origin.location.lat,
+        passenger.origin.location.lng
+      );
+      const destinationDistance = calculateDistance(
+        driver.destination.location.lat,
+        driver.destination.location.lng,
+        passenger.destination.location.lat,
+        passenger.destination.location.lng
+      );
+
+      // Convert distances from kilometers to meters
+      const originDistanceMeters = originDistance * 1000;
+      const destinationDistanceMeters = destinationDistance * 1000;
+
+      // Check if either the origin or destination distance exceeds the threshold
+      if (
+        originDistanceMeters > distanceThresholdMeters ||
+        destinationDistanceMeters > distanceThresholdMeters
+      ) {
+        // Skip this passenger if either the origin or destination is too far from the driver
+        continue;
+      }
+
+      // Simplify rider type checks
+      passenger.match.riderType =
+        passenger.match.riderType === "Slyft for Student"
+          ? "Student"
+          : passenger.match.riderType === "Slyft for Staff"
+          ? "Staff"
+          : null;
+
+      driver.match.passengerType === "Staff or Student" &&
+        (driver.match.passengerType = null);
+
+      // Determine if the passenger is a valid match for the driver
+      const isMatch =
+        passenger.match.riderType &&
+        driver.match.passengerType &&
+        driver.match.passengerType === passenger.user.userType &&
+        passenger.match.riderType === driver.user.userType;
+
+      if (
+        isMatch ||
+        (!passenger.match.riderType &&
+          driver.match.passengerType === passenger.user.userType) ||
+        (!driver.match.passengerType &&
+          passenger.match.riderType === driver.user.userType) ||
+        (!passenger.match.riderType && !driver.match.passengerType)
+      ) {
+        bestMatches.push({
+          passenger,
+          distance: Math.max(originDistance, destinationDistance),
+        });
       }
     }
+
+    // Sort the best matches by distance and pick the top 3
+    bestMatches.sort((a, b) => a.distance - b.distance);
+    const top3Matches = bestMatches.slice(0, 3);
+
+    // Add the best matches to the results
+    matches.push({
+      driver,
+      passengers: top3Matches.map((match) => match.passenger),
+    });
 
     return matches; // Return the matched pairs
   } catch (error) {
