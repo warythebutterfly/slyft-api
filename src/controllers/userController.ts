@@ -272,6 +272,7 @@ export const updateUser = async (req: Request, res: Response) => {
       dateOfBirth,
       phoneNumber,
       homeAddress,
+      distanceThreshold,
       gender,
       country,
       driverLicense,
@@ -319,6 +320,7 @@ export const updateUser = async (req: Request, res: Response) => {
         longitude: homeAddress?.longitude,
         latitude: homeAddress?.latitude,
       },
+      distanceThreshold,
       gender,
       country,
       ...(avatarUrl ? { avatar: avatarUrl } : {}),
@@ -896,8 +898,22 @@ console.log(passengers);
 export const offerRide = async (req: Request, res: Response) => {
   try {
     const { rideInformation } = req.body;
-    drivers.push(rideInformation);
-    let matches = await matchDriverPassengers(rideInformation, passengers, 1.3);
+    const driverIndex: number = drivers.findIndex(
+      (driver) => driver.user._id === rideInformation.user._id
+    );
+
+    if (driverIndex >= 0) {
+      // Driver exists, replace with the new ride information
+      drivers[driverIndex] = rideInformation;
+    } else {
+      // Driver does not exist, push the new ride information
+      drivers.push(rideInformation);
+    }
+    let matches = await matchDriverPassengers(
+      rideInformation,
+      passengers,
+      rideInformation.user.distanceThreshold || 1.3
+    );
     return res.status(201).json({
       success: true,
       message: "Ride offered successfully",
@@ -911,7 +927,6 @@ export const offerRide = async (req: Request, res: Response) => {
     });
   }
 };
-
 
 // @desc    Register a new user
 // @route   POST /v1/ride/request-ride

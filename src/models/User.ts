@@ -7,6 +7,7 @@ interface IUser {
   dateOfBirth?: Date;
   phoneNumber?: string;
   homeAddress?: any;
+  distanceThreshold?: number;
   gender?: string;
   country?: string;
   avatar?: string;
@@ -48,6 +49,7 @@ const UserSchema = new Schema<IUserModel>(
       longitude: { type: Number, required: false },
       latitude: { type: Number, required: false },
     },
+    distanceThreshold: { type: Number, default: 1.3 },
     gender: { type: String },
     country: { type: String },
     avatar: { type: String },
