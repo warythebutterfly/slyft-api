@@ -945,20 +945,25 @@ export const acceptRide = async (req: Request, res: Response) => {
     }
 
     // Check if the passenger exists in the map
-    if (!passengers.has(passengerId)) {
+    if (
+      passengers.filter((passenger) => passenger.user._id == passengerId)
+        .length <= 0
+    ) {
       return res.status(404).json({ message: "Passenger not found" });
     }
 
-    // Check if the driver exists in the map
-    if (!drivers.has(driverId)) {
+    if (drivers.filter((driver) => driver.user._id == driverId).length <= 0) {
+      // Check if the driver exists in the map
       return res.status(404).json({ message: "Driver not found" });
     }
 
     // Remove the accepted passenger from the map
-    passengers.delete(passengerId);
+    passengers = passengers.filter(
+      (passenger) => passenger.user._id !== passengerId
+    );
 
     // Remove the driver from the map
-    drivers.delete(driverId);
+    drivers = drivers.filter((driver) => driver.user._id !== driverId);
 
     return res
       .status(201)
