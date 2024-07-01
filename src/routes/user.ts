@@ -38,7 +38,7 @@ export default (router: Router) => {
   router
     .route("/user/:id")
     .get(auth, getById)
-    .put(auth, updateUser)
+    .put(updateUser)
     .patch(reactivate, closeUser)
     .delete(auth, removeUser);
   router.post("/user/auth/forgot-password", sendPasswordReset);
