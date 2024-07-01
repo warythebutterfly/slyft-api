@@ -9,7 +9,12 @@ import {
 } from "./user";
 import { authentication, isValidEmail, random } from "../helpers";
 import { generateToken } from "../utils/jwt-service";
-import { getOtp, sendEmailOtp, sendVerifyEmailOtp } from "../utils/otp";
+import {
+  generateOtp,
+  getOtp,
+  sendEmailOtp,
+  sendVerifyEmailOtp,
+} from "../utils/otp";
 import { deleteOtpById } from "./otp";
 import { createToken, updateTokenByUserId } from "./token";
 import { getRoleByName } from "./role";
@@ -988,10 +993,15 @@ export const acceptRide = async (req: Request, res: Response) => {
     // Remove the driver from the map
     drivers = drivers.filter((driver) => driver.user._id !== driverId);
 
+    const pin = await generateOtp(4);
+    match.pin = pin;
+
     notifyPieSocketClient({ user: passengerId, match });
-    return res
-      .status(201)
-      .json({ success: true, message: "Ride accepted successfully" });
+    return res.status(201).json({
+      success: true,
+      message: "Ride accepted successfully",
+      data: { pin },
+    });
   } catch (error) {
     Logging.error(error);
     return res.status(500).json({
