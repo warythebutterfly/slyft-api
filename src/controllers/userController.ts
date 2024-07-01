@@ -278,6 +278,7 @@ export const updateUser = async (req: Request, res: Response) => {
       driverLicense,
       vehicle,
       insurance,
+      avatar,
       // backgroundCheckStatus,
       // backgroundCheckDate,
       //availability,
@@ -302,14 +303,6 @@ export const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    let avatarUrl: string = null;
-
-    // Enhancement: Offload to a queue
-    // if (file) {
-    //   const { url } = await handleImageUploadToS3(file);
-    //   avatarUrl = url;
-    // }
-
     const updatedUser = await updateUserById(userId, {
       firstname,
       lastname,
@@ -323,7 +316,7 @@ export const updateUser = async (req: Request, res: Response) => {
       distanceThreshold,
       gender,
       country,
-      ...(avatarUrl ? { avatar: avatarUrl } : {}),
+      avatar,
       driverLicense: {
         licenseNumber: driverLicense?.licenseNumber,
         licenseExpiryDate: driverLicense?.licenseExpiryDate,
