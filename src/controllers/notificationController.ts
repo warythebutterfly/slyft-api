@@ -281,6 +281,7 @@ export class PieWebSocketConnection {
 
     this.ws.on("message", (data) => {
       console.log("i got here");
+      console.log(data);
       this.handleIncomingMessage(data);
     });
 
@@ -297,7 +298,10 @@ export class PieWebSocketConnection {
 
   handleIncomingMessage(data: any) {
     try {
-      const message = JSON.parse(data.toString());
+      console.log("in handler");
+      console.log(typeof data);
+      const messageString = data.toString();
+      const message = JSON.parse(messageString);
       console.log(message);
       const userId = message.user;
 
@@ -349,15 +353,20 @@ new PieWebSocketConnection();
 //   // }
 // };
 
-export const notifyPieSocketClient = (notification: any) => {
+export const notifyPieSocketClient = (notification) => {
   const { user } = notification;
   const userConnections = pieSocketConnections.get(user.toString());
   if (userConnections && userConnections.length > 0) {
-    userConnections.forEach((ws) => {
-      ws.send(JSON.stringify(notification));
-    });
+    const notificationString = JSON.stringify(notification);
+    const chunkSize = 50000; // Set an appropriate chunk size
+    for (let i = 0; i < notificationString.length; i += chunkSize) {
+      const chunk = notificationString.substring(i, i + chunkSize);
+      userConnections.forEach((ws) => {
+        ws.send(chunk);
+      });
+    }
   } else {
-    Logging.error(
+    console.error(
       `WebSocket connections for user ${user.toString()} not found.`
     );
   }
