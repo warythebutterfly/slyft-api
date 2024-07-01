@@ -355,19 +355,22 @@ new PieWebSocketConnection();
 
 export const notifyPieSocketClient = (notification) => {
   const { user } = notification;
-  const userConnections = pieSocketConnections.get(user.toString());
+
+  // Create a deep copy of the user object without the avatar property
+  const sanitizedUser = { ...user };
+  delete sanitizedUser.avatar;
+
+  // Update the notification with the sanitized user
+  const sanitizedNotification = { ...notification, user: sanitizedUser };
+
+  const userConnections = pieSocketConnections.get(user._id.toString());
   if (userConnections && userConnections.length > 0) {
-    const notificationString = JSON.stringify(notification);
-    const chunkSize = 50000; // Set an appropriate chunk size
-    for (let i = 0; i < notificationString.length; i += chunkSize) {
-      const chunk = notificationString.substring(i, i + chunkSize);
-      userConnections.forEach((ws) => {
-        ws.send(chunk);
-      });
-    }
+    userConnections.forEach((ws) => {
+      ws.send(JSON.stringify(sanitizedNotification));
+    });
   } else {
     console.error(
-      `WebSocket connections for user ${user.toString()} not found.`
+      `WebSocket connections for user ${user._id.toString()} not found.`
     );
   }
 };
