@@ -354,23 +354,28 @@ new PieWebSocketConnection();
 // };
 
 export const notifyPieSocketClient = (notification) => {
-  const { user } = notification;
+  const { user, match } = notification;
 
-  // Create a deep copy of the user object without the avatar property
-  const sanitizedUser = { ...user };
-  delete sanitizedUser.avatar;
+  // Create a deep copy of the notification object
+  const sanitizedNotification = { ...notification };
 
-  // Update the notification with the sanitized user
-  const sanitizedNotification = { ...notification, user: sanitizedUser };
+  // Check if match.passenger.user exists and remove avatar property
+  if (
+    sanitizedNotification.match &&
+    sanitizedNotification.match.passenger &&
+    sanitizedNotification.match.passenger.user
+  ) {
+    delete sanitizedNotification.match.passenger.user;
+  }
 
-  const userConnections = pieSocketConnections.get(user._id.toString());
+  const userConnections = pieSocketConnections.get(user.toString());
   if (userConnections && userConnections.length > 0) {
     userConnections.forEach((ws) => {
       ws.send(JSON.stringify(sanitizedNotification));
     });
   } else {
     console.error(
-      `WebSocket connections for user ${user._id.toString()} not found.`
+      `WebSocket connections for user ${user.toString()} not found.`
     );
   }
 };
