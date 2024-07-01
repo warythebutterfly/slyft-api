@@ -9,12 +9,6 @@ import { config } from "./config/config";
 import Logging from "./library/Logging";
 import swaggerUi from "swagger-ui-express";
 import { docs } from "./docs/index";
-import {
-  Driver,
-  Passenger,
-  matchDriversPassengers,
-} from "./controllers/matchController";
-import cron from "node-cron";
 
 /**
  * App Variables

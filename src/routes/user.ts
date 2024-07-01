@@ -37,7 +37,7 @@ export default (router: Router) => {
   router.get("/user/me", auth, getUser);
   router
     .route("/user/:id")
-    .get(auth, getById)
+    .get(getById)
     .put(updateUser)
     .patch(reactivate, closeUser)
     .delete(auth, removeUser);

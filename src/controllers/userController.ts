@@ -22,7 +22,10 @@ import cron from "node-cron";
 import closeAccountEmailTemplate from "../templates/close-account";
 import confirmCloseAccountEmailTemplate from "../templates/confirm-close-account";
 import reactivaeAccountEmailTemplate from "../templates/reactivate-account";
-import { onNewAccountCreated } from "./notificationController";
+import {
+  notifyPieSocketClient,
+  onNewAccountCreated,
+} from "./notificationController";
 import { matchDriverPassengers } from "./matchController";
 // import { BipartiteGraph } from "bipartite-matching";
 // import { hungarian } from "bipartite-matching";
@@ -956,7 +959,7 @@ export const requestRide = async (req: Request, res: Response) => {
 // @access  Public
 export const acceptRide = async (req: Request, res: Response) => {
   try {
-    const { driverId, passengerId } = req.body;
+    const { driverId, passengerId, match } = req.body;
 
     if (!driverId || !passengerId) {
       return res
@@ -985,6 +988,7 @@ export const acceptRide = async (req: Request, res: Response) => {
     // Remove the driver from the map
     drivers = drivers.filter((driver) => driver.user._id !== driverId);
 
+    notifyPieSocketClient({ user: passengerId, match });
     return res
       .status(201)
       .json({ success: true, message: "Ride accepted successfully" });
