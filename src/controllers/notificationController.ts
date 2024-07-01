@@ -299,7 +299,7 @@ export class PieWebSocketConnection {
     try {
       const message = JSON.parse(data.toString());
       console.log(message);
-      const userId = message.userId;
+      const userId = message.user;
 
       if (userId) {
         const userConnections = pieSocketConnections.get(userId) || [];
