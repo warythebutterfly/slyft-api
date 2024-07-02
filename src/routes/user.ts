@@ -17,6 +17,7 @@ import {
   acceptRide,
   updateUserRating,
   getPassengers,
+  UnrequestRide,
 } from "../controllers/userController";
 import { auth, reactivate } from "../middleware/auth";
 import {
@@ -54,6 +55,7 @@ export default (router: Router) => {
   router.route("/user/role-permission").get(auth, get).post(auth, create);
   router.post("/ride/offer-ride", offerRide);
   router.post("/ride/request-ride", requestRide);
+  router.post("/ride/unrequest-ride", UnrequestRide);
   router.post("/ride/accept", acceptRide);
   router.post("/driver/get-passengers", getPassengers);
 };

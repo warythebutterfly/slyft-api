@@ -1009,6 +1009,27 @@ export const requestRide = async (req: Request, res: Response) => {
   }
 };
 
+// @route   POST /v1/ride/unrequest-ride
+// @access  Public
+export const UnrequestRide = async (req: Request, res: Response) => {
+  try {
+    const { rideInformation } = req.body;
+    passengers = passengers.filter(
+      (passenger) => passenger.user._id !== rideInformation.user._id
+    );
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Ride canceled successfully" });
+  } catch (error) {
+    Logging.error(error);
+    return res.status(500).json({
+      success: false,
+      errors: ["Internal Server Error. Please try again later.", error.message],
+    });
+  }
+};
+
 // @desc    Register a new user
 // @route   POST /v1/ride/accept
 // @access  Public
