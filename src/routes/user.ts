@@ -54,4 +54,5 @@ export default (router: Router) => {
   router.post("/ride/offer-ride", offerRide);
   router.post("/ride/request-ride", requestRide);
   router.post("/ride/accept", acceptRide);
+  router.post("/driver/get-passengers", acceptRide);
 };

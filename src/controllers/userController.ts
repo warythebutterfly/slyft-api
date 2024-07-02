@@ -1061,6 +1061,29 @@ export const acceptRide = async (req: Request, res: Response) => {
   }
 };
 
+export const getPassengers = async (req: Request, res: Response) => {
+  try {
+    const { driver } = req.body;
+
+    let matches = await matchDriverPassengers(
+      driver,
+      passengers,
+      driver.user.distanceThreshold || 1.3
+    );
+    return res.status(201).json({
+      success: true,
+      message: "Ride offered successfully",
+      data: matches,
+    });
+  } catch (error) {
+    Logging.error(error);
+    return res.status(500).json({
+      success: false,
+      errors: ["Internal Server Error. Please try again later.", error.message],
+    });
+  }
+};
+
 async function processUserRoles(user: IUser) {
   const permissionIds = await Promise.all(
     user.roles.map(
