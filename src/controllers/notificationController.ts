@@ -280,8 +280,8 @@ export class PieWebSocketConnection {
     });
 
     this.ws.on("message", (data) => {
-      console.log("i got here");
-      console.log(data);
+      // console.log("i got here");
+      // console.log(data);
       this.handleIncomingMessage(data);
     });
 
@@ -298,11 +298,11 @@ export class PieWebSocketConnection {
 
   handleIncomingMessage(data: any) {
     try {
-      console.log("in handler");
-      console.log(typeof data);
+      // console.log("in handler");
+      // console.log(typeof data);
       const messageString = data.toString();
       const message = JSON.parse(messageString);
-      console.log(message);
+      // console.log(message);
       const userId = message.user;
 
       if (userId) {

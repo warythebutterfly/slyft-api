@@ -9,6 +9,7 @@ import { config } from "./config/config";
 import Logging from "./library/Logging";
 import swaggerUi from "swagger-ui-express";
 import { docs } from "./docs/index";
+import bodyParser from "body-parser";
 
 /**
  * App Variables
@@ -37,6 +38,9 @@ const startServer = async () => {
   app.use(cors({ origin: "*" }));
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
+
+  app.use(bodyParser.json({ limit: "10mb" }));
+  app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
   app.use((req, res, next) => {
     /** Log the Request */

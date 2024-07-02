@@ -938,11 +938,11 @@ const passenger3 = {
 };
 
 // let drivers: Driver[] = [driver1, driver2, driver3]; // Array of driver objects
-passengers.push(passenger1);
-passengers.push(passenger2);
-passengers.push(passenger3);
+// passengers.push(passenger1);
+// passengers.push(passenger2);
+// passengers.push(passenger3);
 
-console.log(passengers);
+// console.log(passengers);
 // @desc    Register a new user
 // @route   POST /v1/ride/offer-ride
 // @access  Public
