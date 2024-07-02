@@ -15,6 +15,7 @@ import {
   offerRide,
   requestRide,
   acceptRide,
+  updateUserRating,
 } from "../controllers/userController";
 import { auth, reactivate } from "../middleware/auth";
 import {
@@ -26,10 +27,6 @@ import {
   get as getPermissions,
 } from "../controllers/permissionController";
 import { get, create } from "../controllers/rolePermissionController";
-import {
-  matchDriverPassengers,
-  matchDriversPassengers,
-} from "../controllers/matchController";
 
 export default (router: Router) => {
   router.post("/user/auth/register", registerUser);
@@ -41,6 +38,8 @@ export default (router: Router) => {
     .put(updateUser)
     .patch(reactivate, closeUser)
     .delete(auth, removeUser);
+
+  router.route("/user/rating/:id").patch(updateUserRating);
   router.post("/user/auth/forgot-password", sendPasswordReset);
   router.post("/user/auth/verify-otp", verifyPasswordReset);
   router.post("/user/auth/verify-email", verifyEmail);

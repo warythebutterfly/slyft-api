@@ -354,7 +354,7 @@ new PieWebSocketConnection();
 // };
 
 export const notifyPieSocketClient = (notification) => {
-  const { user, match } = notification;
+  const { user } = notification;
 
   // Create a deep copy of the notification object
   const sanitizedNotification = { ...notification };
@@ -365,7 +365,7 @@ export const notifyPieSocketClient = (notification) => {
     sanitizedNotification.match.passenger &&
     sanitizedNotification.match.passenger.user
   ) {
-    delete sanitizedNotification.match.passenger.user;
+    delete sanitizedNotification.match.passenger.user.avatar;
   }
 
   const userConnections = pieSocketConnections.get(user.toString());

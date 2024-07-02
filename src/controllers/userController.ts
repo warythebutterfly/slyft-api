@@ -371,6 +371,56 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+// @desc    Update a user by ID
+// @route   PATCH /v1/user/rating/:id
+// @access  Private
+export const updateUserRating = async (req: Request, res: Response) => {
+  try {
+    // Get user
+    const userId = req.params.id;
+
+    const { rating }: { rating: Number } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        errors: ["UserId was not supplied."],
+      });
+    }
+
+    const userExists = await UserModel.findById(userId);
+
+    if (!userExists) {
+      return res.status(404).json({
+        success: false,
+        errors: ["User not found"],
+      });
+    }
+
+    const existingRating = userExists.rating || 0;
+    const averageRating = (existingRating + rating) / 2;
+
+    const updatedUser = await updateUserById(userId, {
+      rating: averageRating,
+    });
+
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "User rating updated successfully",
+        data: { user: updatedUser },
+      })
+      .end();
+  } catch (error) {
+    Logging.error(error);
+    return res.status(500).json({
+      success: false,
+      errors: ["Internal Server Error. Please try again later.", error.message],
+    });
+  }
+};
+
 // @desc    Delete a user permanently by ID
 // @route   DELETE /v1/user/:id
 // @access  Private
