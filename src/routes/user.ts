@@ -29,6 +29,7 @@ import {
   get as getPermissions,
 } from "../controllers/permissionController";
 import { get, create } from "../controllers/rolePermissionController";
+import { startTrip, updateTrip } from "../controllers/tripController";
 
 export default (router: Router) => {
   router.post("/user/auth/register", registerUser);
@@ -58,4 +59,6 @@ export default (router: Router) => {
   router.post("/ride/unrequest-ride", UnrequestRide);
   router.post("/ride/accept", acceptRide);
   router.post("/driver/get-passengers", getPassengers);
+  router.post("/trip/start-trip", startTrip);
+  router.patch("/trip/update-trip", updateTrip);
 };
