@@ -97,7 +97,7 @@ interface UpdateTripStatusRequestBody {
   status: "started" | "inTransit" | "canceled" | "completed";
 }
 // @desc    Update trip status
-// @route   PATCH /v1/user/auth/login
+// @route   PATCH /v1/trip/update-trip/:tripId
 // @access  Private
 export const updateTrip = async (
   req: Request<{ tripId: string }, {}, UpdateTripStatusRequestBody>,

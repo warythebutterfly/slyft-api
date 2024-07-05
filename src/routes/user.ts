@@ -60,5 +60,5 @@ export default (router: Router) => {
   router.post("/ride/accept", acceptRide);
   router.post("/driver/get-passengers", getPassengers);
   router.post("/trip/start-trip", startTrip);
-  router.patch("/trip/update-trip", updateTrip);
+  router.patch("/trip/update-trip/:tripId", updateTrip);
 };
