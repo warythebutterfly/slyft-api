@@ -271,9 +271,7 @@ export class PieWebSocketConnection {
   }
 
   connectToWebSocketServer() {
-    this.ws = new WebSocket(
-      "wss://free.blr2.piesocket.com/v3/1?api_key=dKA1PcoBPSDNAVPH8sUOpn6LTHEaArJjWJomLZ9U&notify_self=1"
-    );
+    this.ws = new WebSocket(process.env.WEBSOCKET_URL);
 
     this.ws.on("open", () => {
       console.log("Connected to PieSocket server");
